@@ -6,6 +6,7 @@ import afsj.efm.category.application.exceptions.ConflictException;
 import afsj.efm.category.application.exceptions.ResourceNotFoundException;
 import afsj.efm.category.application.mappers.CategoryMapper;
 import afsj.efm.category.domain.entities.Category;
+import afsj.efm.category.infrastructure.persistence.CategoryJpaRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
