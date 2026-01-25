@@ -1,8 +1,8 @@
 package afsj.efm.category.infrastructure.web;
 
 import afsj.efm.category.application.dtos.CategoryResponse;
-import afsj.efm.category.application.exceptions.ConflictException;
-import afsj.efm.category.application.exceptions.ResourceNotFoundException;
+import afsj.efm.category.application.errors.CategoryConflicts;
+import afsj.efm.category.application.errors.CategoryNotFound;
 import afsj.efm.category.application.services.CategoryApplicationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class CategoryControllerTest {
    @DisplayName("Should return 404 when not found by id")
    void returnHttpStatus404() throws Exception {
       Mockito.when(service.findById(1L))
-              .thenThrow(ResourceNotFoundException.byId(1L));
+              .thenThrow(CategoryNotFound.byId(1L));
 
       mockMvc.perform(get("/categories/1"))
               .andExpect(status().isNotFound());
@@ -69,7 +69,7 @@ class CategoryControllerTest {
    @DisplayName("Should return 409 when category name already exists")
    void return409WhenDuplicateName() throws Exception {
       Mockito.when(service.save(Mockito.any()))
-              .thenThrow(ConflictException.categoryName("semente"));
+              .thenThrow(CategoryConflicts.nameAlreadyExists("semente"));
 
       mockMvc.perform(post("/categories")
                       .contentType("application/json")
@@ -102,7 +102,7 @@ class CategoryControllerTest {
    @Test
    @DisplayName("Should return 404 when deleting non-existing category")
    void return404WhenDeleteNotFound() throws Exception {
-      Mockito.doThrow(ResourceNotFoundException.byId(1L))
+      Mockito.doThrow(CategoryNotFound.byId(1L))
               .when(service).delete(1L);
 
       mockMvc.perform(delete("/categories/1"))

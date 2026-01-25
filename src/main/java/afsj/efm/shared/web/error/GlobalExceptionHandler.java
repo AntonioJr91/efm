@@ -1,7 +1,7 @@
 package afsj.efm.shared.web.error;
 
-import afsj.efm.category.application.exceptions.ConflictException;
-import afsj.efm.category.application.exceptions.ResourceNotFoundException;
+import afsj.efm.shared.application.exceptions.ConflictException;
+import afsj.efm.shared.application.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

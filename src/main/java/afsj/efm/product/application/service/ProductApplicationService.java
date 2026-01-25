@@ -1,10 +1,12 @@
 package afsj.efm.product.application.service;
 
+import afsj.efm.category.application.errors.CategoryConflicts;
+import afsj.efm.category.application.errors.CategoryNotFound;
 import afsj.efm.product.application.dtos.ProductRequest;
 import afsj.efm.product.application.dtos.ProductResponse;
 import afsj.efm.product.application.dtos.StockUpdateResponse;
-import afsj.efm.product.application.exceptions.ConflictException;
-import afsj.efm.product.application.exceptions.ResourceNotFoundException;
+import afsj.efm.product.application.errors.ProductConflicts;
+import afsj.efm.product.application.errors.ProductNotFound;
 import afsj.efm.product.application.mappers.ProductMapper;
 import afsj.efm.product.application.mappers.StockMapper;
 import afsj.efm.product.domain.entities.Product;
@@ -36,7 +38,7 @@ public class ProductApplicationService {
    @Transactional
    public ProductResponse save(ProductRequest request) {
       repository.findByName(request.name()).ifPresent(product -> {
-         throw ConflictException.productName(request.name());
+         throw ProductConflicts.nameAlreadyExists(request.name());
       });
 
       Product newProduct = new Product(request.name(), request.stock(), request.unitOfMeasure());
@@ -66,12 +68,12 @@ public class ProductApplicationService {
 
    @Transactional
    public void delete(Long id) {
-      if (!repository.existsById(id)) throw ResourceNotFoundException.byId(id);
+      if (!repository.existsById(id)) throw ProductNotFound.byId(id);
       repository.deleteById(id);
    }
 
    private Product findProductById(Long id) {
       return repository.findById(id)
-              .orElseThrow(() -> ResourceNotFoundException.byId(id));
+              .orElseThrow(() -> ProductNotFound.byId(id));
    }
 }

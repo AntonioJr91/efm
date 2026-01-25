@@ -2,11 +2,12 @@ package afsj.efm.category.application.services;
 
 import afsj.efm.category.application.dtos.CategoryRequest;
 import afsj.efm.category.application.dtos.CategoryResponse;
-import afsj.efm.category.application.exceptions.ConflictException;
-import afsj.efm.category.application.exceptions.ResourceNotFoundException;
+import afsj.efm.category.application.errors.CategoryConflicts;
+import afsj.efm.category.application.errors.CategoryNotFound;
 import afsj.efm.category.application.mappers.CategoryMapper;
 import afsj.efm.category.domain.entities.Category;
 import afsj.efm.category.infrastructure.persistence.CategoryJpaRepository;
+import afsj.efm.product.application.errors.ProductConflicts;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +37,7 @@ public class CategoryApplicationService {
    public CategoryResponse save(CategoryRequest request) {
       repository.findByName(request.name())
               .ifPresent(c -> {
-                 throw ConflictException.categoryName(request.name());
+                 throw CategoryConflicts.nameAlreadyExists(request.name());
               });
 
       var category = new Category(request.name());
@@ -48,11 +49,11 @@ public class CategoryApplicationService {
 
    @Transactional
    public void delete(Long id) {
-      if (repository.existsById(id)) throw ResourceNotFoundException.byId(id);
+      if (repository.existsById(id)) throw CategoryNotFound.byId(id);
       repository.deleteById(id);
    }
 
    private Category findCategoryById(Long id) {
-      return repository.findById(id).orElseThrow(() -> ResourceNotFoundException.byId(id));
+      return repository.findById(id).orElseThrow(() -> CategoryNotFound.byId(id));
    }
 }
