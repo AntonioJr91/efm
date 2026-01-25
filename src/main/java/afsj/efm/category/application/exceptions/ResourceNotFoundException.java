@@ -1,6 +1,6 @@
 package afsj.efm.category.application.exceptions;
 
-public class ResourceNotFoundException extends RuntimeException {
+public final class ResourceNotFoundException extends RuntimeException {
 
    private ResourceNotFoundException(String message) {
       super(message);

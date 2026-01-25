@@ -1,4 +1,4 @@
-package afsj.efm.category.infrastructure.exceptions;
+package afsj.efm.shared.web.error;
 
 import afsj.efm.category.application.exceptions.ConflictException;
 import afsj.efm.category.application.exceptions.ResourceNotFoundException;
@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.List;
 
 @RestControllerAdvice
-public final class GlobalHandlerException {
+public class GlobalExceptionHandler {
 
    @ExceptionHandler(MethodArgumentNotValidException.class)
    public ResponseEntity<ValidationError> handleValidation(

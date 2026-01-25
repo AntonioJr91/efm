@@ -1,6 +1,6 @@
 package afsj.efm.category.application.exceptions;
 
-public class ConflictException extends RuntimeException {
+public final class ConflictException extends RuntimeException {
    private ConflictException(String message) {
       super(message);
    }

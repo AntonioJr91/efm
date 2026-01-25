@@ -1,4 +1,4 @@
-package afsj.efm.category.infrastructure.exceptions;
+package afsj.efm.shared.web.error;
 
 import java.time.Instant;
 import java.util.List;
