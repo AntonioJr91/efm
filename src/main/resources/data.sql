@@ -1,2 +1,6 @@
+-- CATEGORIES
 insert into categories (name) values ('sementes');
-insert into categories (name) values ('veneno');
+
+-- PRODUCTS
+insert into products(name, stock, unit_of_measure, created_at)
+    values ('milho', 100, 'UNIT', current_timestamp);

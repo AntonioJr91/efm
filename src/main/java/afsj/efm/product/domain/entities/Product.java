@@ -4,6 +4,7 @@ import afsj.efm.product.domain.enums.UnitOfMeasure;
 import afsj.efm.product.domain.exceptions.*;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +16,18 @@ public class Product {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @Column(unique = true, nullable = false)
+   @Column(unique = true, nullable = false, updatable = false)
    private String name;
 
    @Column(nullable = false)
    private int stock;
 
    @Enumerated(EnumType.STRING)
-   @Column(nullable = false)
+   @Column(nullable = false, updatable = false)
    private UnitOfMeasure unitOfMeasure;
+
+   @Column(nullable = false, updatable = false)
+   private LocalDate createdAt;
 
    @OneToMany(mappedBy = "product",
            cascade = CascadeType.ALL,
@@ -41,6 +45,7 @@ public class Product {
       this.name = name;
       this.stock = stock;
       this.unitOfMeasure = unitOfMeasure;
+      this.createdAt = LocalDate.now();
    }
 
    public Long getId() {
@@ -51,9 +56,8 @@ public class Product {
       return name;
    }
 
-   public void changeName(String name) {
-      validateName(name);
-      this.name = name;
+   public LocalDate getCreatedAt() {
+      return createdAt;
    }
 
    public int getAvailableStock() {

@@ -1,0 +1,32 @@
+package afsj.efm.product.application.mappers;
+
+import afsj.efm.product.application.dtos.ProductRequest;
+import afsj.efm.product.application.dtos.ProductResponse;
+import afsj.efm.product.domain.entities.Product;
+
+import java.util.List;
+
+public final class ProductMapper {
+
+   public static ProductResponse toDto(Product product) {
+      return new ProductResponse(
+              product.getId(),
+              product.getName(),
+              product.getAvailableStock(),
+              product.getUnitOfMeasure(),
+              product.getCreatedAt()
+      );
+   }
+
+   public static List<ProductResponse> toDtoList(List<Product> list) {
+      return list.stream().map(ProductMapper::toDto).toList();
+   }
+
+   public static Product toEntity(ProductRequest request) {
+      return new Product(
+              request.name(),
+              request.stock(),
+              request.unitOfMeasure()
+      );
+   }
+}
