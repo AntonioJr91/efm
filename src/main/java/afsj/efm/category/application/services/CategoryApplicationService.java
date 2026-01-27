@@ -42,9 +42,9 @@ public class CategoryApplicationService {
 
       var category = new Category(request.name());
 
-      repository.save(category);
+      Category saved = repository.save(category);
 
-      return CategoryMapper.toDto(category);
+      return CategoryMapper.toDto(saved);
    }
 
    @Transactional

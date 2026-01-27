@@ -102,6 +102,9 @@ class CategoryApplicationServiceTest {
       when(repository.findByName("semente"))
               .thenReturn(Optional.empty());
 
+      when(repository.save(any(Category.class)))
+              .thenAnswer(invocation -> invocation.getArgument(0));
+
       var result = service.save(request);
 
       assertThat(result.name()).isEqualTo("semente");
