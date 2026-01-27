@@ -104,11 +104,8 @@ public class GlobalExceptionHandler {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
    }
 
-   @ExceptionHandler({
-           InsufficientStockException.class,
-           InvalidMovementQuantityException.class
-   })
-   public ResponseEntity<StandardError> handleDomainValidation(
+   @ExceptionHandler(InsufficientStockException.class)
+   public ResponseEntity<StandardError> handleInsufficientStock(
            RuntimeException ex,
            HttpServletRequest request
    ) {
@@ -116,7 +113,7 @@ public class GlobalExceptionHandler {
               Instant.now(),
               HttpStatus.BAD_REQUEST.value(),
               HttpStatus.BAD_REQUEST.getReasonPhrase(),
-              ex.getMessage(),
+              "Not enough stock available to complete the operation",
               request.getRequestURI()
       );
 
