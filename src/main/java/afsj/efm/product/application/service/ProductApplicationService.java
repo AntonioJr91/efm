@@ -2,6 +2,7 @@ package afsj.efm.product.application.service;
 
 import afsj.efm.category.application.errors.CategoryConflicts;
 import afsj.efm.category.application.errors.CategoryNotFound;
+import afsj.efm.category.infrastructure.persistence.CategoryJpaRepository;
 import afsj.efm.product.application.dtos.ProductRequest;
 import afsj.efm.product.application.dtos.ProductResponse;
 import afsj.efm.product.application.dtos.StockUpdateResponse;
@@ -20,9 +21,11 @@ import java.util.List;
 public class ProductApplicationService {
 
    private final ProductJpaRepository repository;
+   private final CategoryJpaRepository categoryRepository;
 
-   public ProductApplicationService(ProductJpaRepository repository) {
+   public ProductApplicationService(ProductJpaRepository repository, CategoryJpaRepository categoryRepository) {
       this.repository = repository;
+      this.categoryRepository = categoryRepository;
    }
 
    @Transactional(readOnly = true)
@@ -37,11 +40,14 @@ public class ProductApplicationService {
 
    @Transactional
    public ProductResponse save(ProductRequest request) {
+      var category = categoryRepository.findById(request.categoryId())
+              .orElseThrow(() -> CategoryNotFound.byId(request.categoryId()));
+
       repository.findByName(request.name()).ifPresent(product -> {
          throw ProductConflicts.nameAlreadyExists(request.name());
       });
 
-      Product newProduct = new Product(request.name(), request.stock(), request.unitOfMeasure());
+      Product newProduct = new Product(request.name(), request.stock(), request.unitOfMeasure(), category);
 
       Product saved = repository.save(newProduct);
 

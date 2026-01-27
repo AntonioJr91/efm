@@ -1,5 +1,6 @@
 package afsj.efm.product.application.mappers;
 
+import afsj.efm.category.domain.entities.Category;
 import afsj.efm.product.application.dtos.ProductRequest;
 import afsj.efm.product.application.dtos.ProductResponse;
 import afsj.efm.product.domain.entities.Product;
@@ -14,7 +15,8 @@ public final class ProductMapper {
               product.getName(),
               product.getAvailableStock(),
               product.getUnitOfMeasure(),
-              product.getCreatedAt()
+              product.getCreatedAt(),
+              product.getCategory().getId()
       );
    }
 
@@ -22,11 +24,12 @@ public final class ProductMapper {
       return list.stream().map(ProductMapper::toDto).toList();
    }
 
-   public static Product toEntity(ProductRequest request) {
+   public static Product toEntity(ProductRequest request, Category category) {
       return new Product(
               request.name(),
               request.stock(),
-              request.unitOfMeasure()
+              request.unitOfMeasure(),
+              category
       );
    }
 }

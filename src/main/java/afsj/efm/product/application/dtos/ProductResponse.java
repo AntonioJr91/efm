@@ -9,6 +9,7 @@ public record ProductResponse(
         String name,
         int stock,
         UnitOfMeasure unitOfMeasure,
-        LocalDate createdAt
+        LocalDate createdAt,
+        Long categoryId
 ) {
 }

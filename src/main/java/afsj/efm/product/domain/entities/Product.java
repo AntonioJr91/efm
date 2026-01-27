@@ -1,5 +1,6 @@
 package afsj.efm.product.domain.entities;
 
+import afsj.efm.category.domain.entities.Category;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import afsj.efm.product.domain.exceptions.*;
 import jakarta.persistence.*;
@@ -29,23 +30,27 @@ public class Product {
    @Column(nullable = false, updatable = false)
    private LocalDate createdAt;
 
-   @OneToMany(mappedBy = "product",
-           cascade = CascadeType.ALL,
-           orphanRemoval = true)
+   @OneToMany(mappedBy = "product")
    private List<StockMovement> stockMovements = new ArrayList<>();
+
+   @ManyToOne(fetch = FetchType.LAZY, optional = false)
+   @JoinColumn(name = "category_id", nullable = false)
+   private Category category;
 
    protected Product() {
    }
 
-   public Product(String name, int stock, UnitOfMeasure unitOfMeasure) {
+   public Product(String name, int stock, UnitOfMeasure unitOfMeasure, Category category) {
       validateName(name);
       validateInitialStock(stock);
       validateUnitOfMeasure(unitOfMeasure);
+      validateCategory(category);
 
       this.name = name;
       this.stock = stock;
       this.unitOfMeasure = unitOfMeasure;
       this.createdAt = LocalDate.now();
+      this.category = category;
    }
 
    public Long getId() {
@@ -70,6 +75,10 @@ public class Product {
 
    public List<StockMovement> getStockMovements() {
       return List.copyOf(stockMovements);
+   }
+
+   public Category getCategory() {
+      return category;
    }
 
    public void increaseStock(int quantity) {
@@ -107,5 +116,9 @@ public class Product {
 
    private void validateUnitOfMeasure(UnitOfMeasure unitOfMeasure) {
       if (unitOfMeasure == null) throw new UnitOfMeasureRequiredException("UNIT_OF_MEASURE_REQUIRED");
+   }
+
+   private void validateCategory(Category category) {
+      if (category == null) throw new InvalidCategoryException("CATEGORY_IS_REQUIRED");
    }
 }
