@@ -5,6 +5,7 @@ import afsj.efm.product.application.errors.ProductConflicts;
 import afsj.efm.product.application.errors.ProductNotFound;
 import afsj.efm.product.application.service.ProductApplicationService;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
+import afsj.efm.product.domain.exceptions.InsufficientStockException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -184,5 +185,17 @@ class ProductControllerTest {
 
       mockMvc.perform(delete("/products/1"))
               .andExpect(status().isNotFound());
+   }
+
+   @Test
+   @DisplayName("Should return 400 when decreasing stock below available")
+   void return400WhenInsufficientStock() throws Exception {
+      Mockito.when(service.decrease(Mockito.eq(1L), Mockito.anyInt()))
+              .thenThrow(new InsufficientStockException("error"));
+
+      mockMvc.perform(patch("/products/1/decrease")
+                      .contentType("application/json")
+                      .content("{\"quantity\": 5}"))
+              .andExpect(status().isBadRequest());
    }
 }
