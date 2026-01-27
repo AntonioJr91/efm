@@ -1,0 +1,188 @@
+package afsj.efm.product.infrastructure.web;
+
+import afsj.efm.product.application.dtos.*;
+import afsj.efm.product.application.errors.ProductConflicts;
+import afsj.efm.product.application.errors.ProductNotFound;
+import afsj.efm.product.application.service.ProductApplicationService;
+import afsj.efm.product.domain.enums.UnitOfMeasure;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(ProductController.class)
+class ProductControllerTest {
+
+   @MockitoBean
+   ProductApplicationService service;
+
+   @Autowired
+   private MockMvc mockMvc;
+
+   @Test
+   @DisplayName("Should return 200 when listing products")
+   void return200ListingProducts() throws Exception {
+      mockMvc.perform(get("/products"))
+              .andExpect(status().isOk());
+   }
+
+   @Test
+   @DisplayName("Should return 200 when find product by id")
+   void return200FindById() throws Exception {
+      Mockito.when(service.findById(1L))
+              .thenReturn(new ProductResponse(
+                      1L,
+                      "milho",
+                      10,
+                      UnitOfMeasure.UNIT,
+                      LocalDate.now()
+              ));
+
+      mockMvc.perform(get("/products/1"))
+              .andExpect(status().isOk());
+   }
+
+   @Test
+   @DisplayName("Should return 404 when product is not found by id")
+   void return404WhenProductNotFound() throws Exception {
+      Mockito.when(service.findById(1L))
+              .thenThrow(ProductNotFound.byId(1L));
+
+      mockMvc.perform(get("/products/1"))
+              .andExpect(status().isNotFound());
+   }
+
+   @Test
+   @DisplayName("Should return 201 when creating product")
+   void return201WhenCreatingProduct() throws Exception {
+      Mockito.when(service.save(Mockito.any()))
+              .thenReturn(new ProductResponse(
+                      1L,
+                      "milho",
+                      10,
+                      UnitOfMeasure.UNIT,
+                      LocalDate.now()
+              ));
+
+      mockMvc.perform(post("/products")
+                      .contentType("application/json")
+                      .content("""
+                          {
+                            "name": "milho",
+                            "stock": 10,
+                            "unitOfMeasure": "UNIT"
+                          }
+                      """))
+              .andExpect(status().isCreated());
+   }
+
+   @Test
+   @DisplayName("Should return 409 when product name already exists")
+   void return409WhenDuplicateName() throws Exception {
+      Mockito.when(service.save(Mockito.any()))
+              .thenThrow(ProductConflicts.nameAlreadyExists("milho"));
+
+      mockMvc.perform(post("/products")
+                      .contentType("application/json")
+                      .content("""
+                          {
+                            "name": "milho",
+                            "stock": 10,
+                            "unitOfMeasure": "UNIT"
+                          }
+                      """))
+              .andExpect(status().isConflict());
+   }
+
+   @Test
+   @DisplayName("Should return 400 when product request body is invalid")
+   void return400WhenInvalidProductRequest() throws Exception {
+      mockMvc.perform(post("/products")
+                      .contentType("application/json")
+                      .content("""
+                          {
+                            "name": "",
+                            "stock": -1,
+                            "unitOfMeasure": null
+                          }
+                      """))
+              .andExpect(status().isBadRequest());
+   }
+
+   @Test
+   @DisplayName("Should return 200 when increasing product stock")
+   void return200WhenIncreaseStock() throws Exception {
+      Mockito.when(service.increase(Mockito.eq(1L), Mockito.anyInt()))
+              .thenReturn(new StockUpdateResponse(1L, "semente", 15));
+
+      mockMvc.perform(patch("/products/1/increase")
+                      .contentType("application/json")
+                      .content("""
+                          { "quantity": 5 }
+                      """))
+              .andExpect(status().isOk());
+   }
+
+   @Test
+   @DisplayName("Should return 200 when decreasing product stock")
+   void return200WhenDecreaseStock() throws Exception {
+      Mockito.when(service.decrease(Mockito.eq(1L), Mockito.anyInt()))
+              .thenReturn(new StockUpdateResponse(1L, "semente", 10));
+
+      mockMvc.perform(patch("/products/1/decrease")
+                      .contentType("application/json")
+                      .content("""
+                          { "quantity": 5 }
+                      """))
+              .andExpect(status().isOk());
+   }
+
+   @Test
+   @DisplayName("Should return 400 when increase stock request is invalid")
+   void return400WhenInvalidIncreaseRequest() throws Exception {
+      mockMvc.perform(patch("/products/1/increase")
+                      .contentType("application/json")
+                      .content("""
+                          { "quantity": 0 }
+                      """))
+              .andExpect(status().isBadRequest());
+   }
+
+   @Test
+   @DisplayName("Should return 400 when decrease stock request is invalid")
+   void return400WhenInvalidDecreaseRequest() throws Exception {
+      mockMvc.perform(patch("/products/1/decrease")
+                      .contentType("application/json")
+                      .content("""
+                          { "quantity": 0 }
+                      """))
+              .andExpect(status().isBadRequest());
+   }
+
+   @Test
+   @DisplayName("Should return 204 when deleting existing product")
+   void return204WhenDeleteProduct() throws Exception {
+      Mockito.doNothing().when(service).delete(1L);
+
+      mockMvc.perform(delete("/products/1"))
+              .andExpect(status().isNoContent());
+   }
+
+   @Test
+   @DisplayName("Should return 404 when deleting non existing product")
+   void return404WhenDeleteProductNotFound() throws Exception {
+      Mockito.doThrow(ProductNotFound.byId(1L))
+              .when(service).delete(1L);
+
+      mockMvc.perform(delete("/products/1"))
+              .andExpect(status().isNotFound());
+   }
+}
