@@ -49,7 +49,7 @@ public class CategoryApplicationService {
 
    @Transactional
    public void delete(Long id) {
-      if (repository.existsById(id)) throw CategoryNotFound.byId(id);
+      if (!repository.existsById(id)) throw CategoryNotFound.byId(id);
       repository.deleteById(id);
    }
 
