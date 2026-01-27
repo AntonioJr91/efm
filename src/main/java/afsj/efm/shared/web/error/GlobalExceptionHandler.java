@@ -1,5 +1,7 @@
 package afsj.efm.shared.web.error;
 
+import afsj.efm.product.domain.exceptions.InsufficientStockException;
+import afsj.efm.product.domain.exceptions.InvalidMovementQuantityException;
 import afsj.efm.shared.application.exceptions.ConflictException;
 import afsj.efm.shared.application.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -100,5 +102,24 @@ public class GlobalExceptionHandler {
               request.getRequestURI()
       );
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+   }
+
+   @ExceptionHandler({
+           InsufficientStockException.class,
+           InvalidMovementQuantityException.class
+   })
+   public ResponseEntity<StandardError> handleDomainValidation(
+           RuntimeException ex,
+           HttpServletRequest request
+   ) {
+      StandardError error = new StandardError(
+              Instant.now(),
+              HttpStatus.BAD_REQUEST.value(),
+              HttpStatus.BAD_REQUEST.getReasonPhrase(),
+              ex.getMessage(),
+              request.getRequestURI()
+      );
+
+      return ResponseEntity.badRequest().body(error);
    }
 }
