@@ -44,7 +44,8 @@ class ProductControllerTest {
                       "milho",
                       10,
                       UnitOfMeasure.UNIT,
-                      LocalDate.now()
+                      LocalDate.now(),
+                      1L
               ));
 
       mockMvc.perform(get("/products/1"))
@@ -70,7 +71,8 @@ class ProductControllerTest {
                       "milho",
                       10,
                       UnitOfMeasure.UNIT,
-                      LocalDate.now()
+                      LocalDate.now(),
+                      1L
               ));
 
       mockMvc.perform(post("/products")
@@ -79,7 +81,8 @@ class ProductControllerTest {
                           {
                             "name": "milho",
                             "stock": 10,
-                            "unitOfMeasure": "UNIT"
+                            "unitOfMeasure": "UNIT",
+                               "categoryId": 1
                           }
                       """))
               .andExpect(status().isCreated());
@@ -97,7 +100,8 @@ class ProductControllerTest {
                           {
                             "name": "milho",
                             "stock": 10,
-                            "unitOfMeasure": "UNIT"
+                            "unitOfMeasure": "UNIT",
+                            "categoryId": 1
                           }
                       """))
               .andExpect(status().isConflict());

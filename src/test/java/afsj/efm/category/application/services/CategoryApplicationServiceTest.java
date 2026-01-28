@@ -128,6 +128,4 @@ class CategoryApplicationServiceTest {
       assertThrows(ResourceNotFoundException.class, () -> service.delete(1L));
       verify(repository, never()).deleteById(1L);
    }
-
-
 }

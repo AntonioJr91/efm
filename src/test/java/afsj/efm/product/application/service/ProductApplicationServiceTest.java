@@ -1,5 +1,7 @@
 package afsj.efm.product.application.service;
 
+import afsj.efm.category.domain.entities.Category;
+import afsj.efm.category.infrastructure.persistence.CategoryJpaRepository;
 import afsj.efm.product.application.dtos.ProductRequest;
 import afsj.efm.product.application.dtos.ProductResponse;
 import afsj.efm.product.domain.entities.Product;
@@ -29,14 +31,20 @@ import static org.mockito.Mockito.*;
 class ProductApplicationServiceTest {
 
    Product milho;
+   Category category = new Category("other");
+
    @Mock
    private ProductJpaRepository repository;
+
+   @Mock
+   private CategoryJpaRepository categoryJpaRepository;
+
    @InjectMocks
    private ProductApplicationService service;
 
    @BeforeEach
    void setUp() {
-      milho = new Product("milho", 15, UnitOfMeasure.UNIT);
+      milho = new Product("milho", 15, UnitOfMeasure.UNIT, category);
    }
 
    @Test
@@ -88,10 +96,13 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should save product when name does not exist")
    void saveProduct() {
-      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure());
+      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), 1L);
 
       when(repository.findByName(milho.getName()))
               .thenReturn(Optional.empty());
+
+      when(categoryJpaRepository.findById(anyLong()))
+              .thenReturn(Optional.of(category));
 
       when(repository.save(any(Product.class)))
               .thenAnswer(invocation -> invocation.getArgument(0));
@@ -105,10 +116,13 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should throw conflict when product name already exists")
    void nameConflict() {
-      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure());
+      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), 1L);
 
       when(repository.findByName(milho.getName()))
-              .thenReturn(Optional.of(new Product(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure())));
+              .thenReturn(Optional.of(new Product(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), category)));
+
+      when(categoryJpaRepository.findById(anyLong()))
+              .thenReturn(Optional.of(category));
 
       assertThrows(ConflictException.class,
               () -> service.save(request));
@@ -118,7 +132,7 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should delete product when exists")
    void deleteProduct() {
-      when(repository.existsById(1L)).thenReturn(true);
+      when(repository.existsById(anyLong())).thenReturn(true);
 
       service.delete(1L);
       verify(repository).deleteById(1L);
@@ -127,9 +141,10 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should throw not found when deleting  non existing product")
    void returnErrorWhenDeleteProduct() {
-      when(repository.existsById(1L)).thenReturn(false);
+      when(repository.existsById(anyLong())).thenReturn(false);
 
       assertThrows(ResourceNotFoundException.class, () -> service.delete(1L));
+
       verify(repository, never()).deleteById(1L);
    }
 
@@ -160,10 +175,10 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should throw not found when increasing stock of non existing product")
    void increaseStockProductNotFound() {
-      when(repository.findById(anyLong()))
-              .thenReturn(Optional.empty());
+      when(repository.findById(1L)).thenReturn(Optional.empty());
+
       assertThrows(ResourceNotFoundException.class,
-              () -> service.increase(1L, 0));
+              () -> service.increase(1L, 5));
    }
 
    @Test
@@ -194,13 +209,11 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should throw not found when decreasing stock of non existing product")
    void decreaseStockProductNotFound() {
-      when(repository.findById(anyLong()))
-              .thenReturn(Optional.empty());
+      when(repository.findById(1L)).thenReturn(Optional.empty());
 
       assertThrows(ResourceNotFoundException.class,
               () -> service.decrease(1L, 5));
+
       verify(repository, never()).save(any());
    }
-
-
 }

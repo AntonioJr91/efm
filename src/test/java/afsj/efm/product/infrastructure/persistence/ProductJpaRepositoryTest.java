@@ -1,5 +1,7 @@
 package afsj.efm.product.infrastructure.persistence;
 
+import afsj.efm.category.domain.entities.Category;
+import afsj.efm.category.infrastructure.persistence.CategoryJpaRepository;
 import afsj.efm.product.domain.entities.Product;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import org.junit.jupiter.api.Assertions;
@@ -14,12 +16,18 @@ import org.springframework.dao.DataIntegrityViolationException;
 class ProductJpaRepositoryTest {
 
    Product product;
+   Category category;
+
    @Autowired
    private ProductJpaRepository repository;
 
+   @Autowired
+   private CategoryJpaRepository categoryJpaRepository;
+
    @BeforeEach
    void setUp() {
-      product = new Product("semente", 10, UnitOfMeasure.UNIT);
+      category = categoryJpaRepository.save(new Category("other"));
+      product = new Product("semente", 10, UnitOfMeasure.UNIT, category);
    }
 
    @Test
@@ -29,6 +37,7 @@ class ProductJpaRepositoryTest {
 
       Assertions.assertNotNull(saved.getId());
       Assertions.assertEquals(product.getName(), saved.getName());
+      Assertions.assertEquals(product.getCategory(), saved.getCategory());
    }
 
    @Test
@@ -40,6 +49,7 @@ class ProductJpaRepositoryTest {
 
       Assertions.assertTrue(result.isPresent());
       Assertions.assertEquals(product.getName(), result.get().getName());
+      Assertions.assertEquals(product.getCategory(), result.get().getCategory());
    }
 
    @Test
@@ -53,7 +63,7 @@ class ProductJpaRepositoryTest {
    @Test
    @DisplayName("Should throw error when product name is duplicated")
    void notAllowDuplicate() {
-      var product2 = new Product("milho", 20, UnitOfMeasure.UNIT);
+      var product2 = new Product("milho", 20, UnitOfMeasure.UNIT, category);
 
       repository.saveAndFlush(product);
 
@@ -62,5 +72,5 @@ class ProductJpaRepositoryTest {
               () -> repository.saveAndFlush(product2)
       );
    }
-   
+
 }
