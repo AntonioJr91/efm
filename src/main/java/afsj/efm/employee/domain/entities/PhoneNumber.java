@@ -6,14 +6,10 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public record PhoneNumber(
-        @Column(name = "phone_number", length = 11, nullable = true, updatable = true)
+        @Column(name = "phone_number", length = 11, nullable = true, updatable = true, unique = true)
         String value) {
 
    public PhoneNumber {
-      if (value == null || value.isBlank()) {
-         throw new InvalidPhoneNumberException("PHONE_NUMBER_REQUIRED");
-      }
-
       value = value.trim();
 
       if (!value.matches("^[1-9]{2}9\\d{8}$")) {
