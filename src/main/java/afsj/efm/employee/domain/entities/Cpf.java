@@ -29,26 +29,22 @@ public record Cpf(
       if (cpf.length() != 11) return false;
       if (cpf.chars().distinct().count() == 1) return false;
 
-      try {
-         int sum = 0;
-         for (int i = 0; i < 9; i++)
-            sum += (cpf.charAt(i) - '0') * (10 - i);
+      int sum = 0;
+      for (int i = 0; i < 9; i++)
+         sum += (cpf.charAt(i) - '0') * (10 - i);
 
-         int firstDigit = 11 - (sum % 11);
-         firstDigit = firstDigit > 9 ? 0 : firstDigit;
+      int firstDigit = 11 - (sum % 11);
+      firstDigit = firstDigit > 9 ? 0 : firstDigit;
 
-         sum = 0;
-         for (int i = 0; i < 10; i++)
-            sum += (cpf.charAt(i) - '0') * (11 - i);
+      sum = 0;
+      for (int i = 0; i < 10; i++)
+         sum += (cpf.charAt(i) - '0') * (11 - i);
 
-         int secondDigit = 11 - (sum % 11);
-         secondDigit = secondDigit > 9 ? 0 : secondDigit;
+      int secondDigit = 11 - (sum % 11);
+      secondDigit = secondDigit > 9 ? 0 : secondDigit;
 
-         return firstDigit == (cpf.charAt(9) - '0')
-                 && secondDigit == (cpf.charAt(10) - '0');
+      return firstDigit == (cpf.charAt(9) - '0')
+              && secondDigit == (cpf.charAt(10) - '0');
 
-      } catch (Exception e) {
-         return false;
-      }
    }
 }
