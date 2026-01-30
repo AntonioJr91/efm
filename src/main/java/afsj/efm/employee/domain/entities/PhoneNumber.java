@@ -10,10 +10,13 @@ public record PhoneNumber(
         String value) {
 
    public PhoneNumber {
-      value = value.trim();
 
-      if (!value.matches("^[1-9]{2}9\\d{8}$")) {
-         throw new InvalidPhoneNumberException("INVALID_FORMAT_PHONE_NUMBER");
+      if (value != null) {
+         value = value.trim();
+
+         if (!value.matches("^[1-9]{2}9\\d{8}$")) {
+            throw new InvalidPhoneNumberException("INVALID_FORMAT_PHONE_NUMBER");
+         }
       }
    }
 }

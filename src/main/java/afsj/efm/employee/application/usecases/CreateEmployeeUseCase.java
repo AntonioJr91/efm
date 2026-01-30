@@ -6,6 +6,7 @@ import afsj.efm.employee.application.errors.EmployeeConflicts;
 import afsj.efm.employee.application.mappers.EmployeeMapper;
 import afsj.efm.employee.domain.entities.Cpf;
 import afsj.efm.employee.domain.entities.Employee;
+import afsj.efm.employee.domain.entities.PhoneNumber;
 import afsj.efm.employee.infrastructure.persistence.EmployeeJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,13 @@ public class CreateEmployeeUseCase {
    @Transactional
    public EmployeeResponse execute(EmployeeRequest request) {
       Cpf newCpf = new Cpf(request.cpf());
+      PhoneNumber newPhoneNumber = new PhoneNumber(request.phoneNumber());
 
-      if(repository.existsByCpf(newCpf)) throw EmployeeConflicts.cpfAlreadyExists(newCpf);
+      if (repository.existsByCpf(newCpf))
+         throw EmployeeConflicts.cpfAlreadyExists(newCpf);
+
+      if (repository.existsByPhoneNumber(newPhoneNumber))
+         throw EmployeeConflicts.phoneNumberAlreadyExists(newPhoneNumber);
 
       Employee newEmployee = new Employee(
               request.firstName(),
