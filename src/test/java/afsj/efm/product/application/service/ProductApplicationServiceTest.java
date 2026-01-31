@@ -1,9 +1,11 @@
 package afsj.efm.product.application.service;
 
+import afsj.efm.category.application.usecases.DeleteCategoryUseCase;
 import afsj.efm.category.domain.entities.Category;
 import afsj.efm.category.infrastructure.persistence.CategoryJpaRepository;
 import afsj.efm.product.application.dtos.ProductRequest;
 import afsj.efm.product.application.dtos.ProductResponse;
+import afsj.efm.product.application.usecases.*;
 import afsj.efm.product.domain.entities.Product;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import afsj.efm.product.domain.exceptions.InsufficientStockException;
@@ -22,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -40,7 +42,17 @@ class ProductApplicationServiceTest {
    private CategoryJpaRepository categoryJpaRepository;
 
    @InjectMocks
-   private ProductApplicationService service;
+   private ListProductsUseCase listProducts;
+   @InjectMocks
+   private GetProductByIdUseCase getProductByIdUseCase;
+   @InjectMocks
+   private CreateProductUseCase createProductUseCase;
+   @InjectMocks
+   private DeleteProductUseCase deleteProductUseCase;
+   @InjectMocks
+   private IncreaseStockProductUseCase increaseStockProductUseCase;
+   @InjectMocks
+   private DecreaseStockProductUseCase decreaseStockProductUseCase;
 
    @BeforeEach
    void setUp() {
@@ -52,7 +64,7 @@ class ProductApplicationServiceTest {
    void returnEmptyList() {
       when(repository.findAll()).thenReturn(List.of());
 
-      var result = service.listProducts();
+      var result = listProducts.execute();
 
       assertThat(result).isEmpty();
       verify(repository).findAll();
@@ -65,7 +77,7 @@ class ProductApplicationServiceTest {
 
       when(repository.findAll()).thenReturn(products);
 
-      var result = service.listProducts();
+      var result = listProducts.execute();
 
       assertThat(result).hasSize(1)
               .extracting(ProductResponse::name)
@@ -78,7 +90,7 @@ class ProductApplicationServiceTest {
    void returnProductById() {
       when(repository.findById(milho.getId())).thenReturn(Optional.of(milho));
 
-      var result = service.findById(milho.getId());
+      var result = getProductByIdUseCase.execute(milho.getId());
 
       assertThat(result.name()).isEqualTo(milho.getName());
       verify(repository).findById(milho.getId());
@@ -90,7 +102,7 @@ class ProductApplicationServiceTest {
       when(repository.findById(milho.getId())).thenReturn(Optional.empty());
 
       assertThrows(ResourceNotFoundException.class,
-              () -> service.findById(milho.getId()));
+              () -> getProductByIdUseCase.execute(milho.getId()));
    }
 
    @Test
@@ -107,7 +119,7 @@ class ProductApplicationServiceTest {
       when(repository.save(any(Product.class)))
               .thenAnswer(invocation -> invocation.getArgument(0));
 
-      var result = service.save(request);
+      var result = createProductUseCase.execute(request);
 
       assertThat(result.name()).isEqualTo(request.name());
       verify(repository).save(any(Product.class));
@@ -125,7 +137,7 @@ class ProductApplicationServiceTest {
               .thenReturn(Optional.of(category));
 
       assertThrows(ConflictException.class,
-              () -> service.save(request));
+              () -> createProductUseCase.execute(request));
       verify(repository, never()).save(any());
    }
 
@@ -134,7 +146,7 @@ class ProductApplicationServiceTest {
    void deleteProduct() {
       when(repository.existsById(anyLong())).thenReturn(true);
 
-      service.delete(1L);
+      deleteProductUseCase.execute(1L);
       verify(repository).deleteById(1L);
    }
 
@@ -143,7 +155,7 @@ class ProductApplicationServiceTest {
    void returnErrorWhenDeleteProduct() {
       when(repository.existsById(anyLong())).thenReturn(false);
 
-      assertThrows(ResourceNotFoundException.class, () -> service.delete(1L));
+      assertThrows(ResourceNotFoundException.class, () -> deleteProductUseCase.execute(1L));
 
       verify(repository, never()).deleteById(1L);
    }
@@ -156,7 +168,7 @@ class ProductApplicationServiceTest {
       when(repository.findById(anyLong()))
               .thenReturn(Optional.of(milho));
 
-      var response = service.increase(1L, 5);
+      var response = increaseStockProductUseCase.execute(1L, 5);
 
       assertThat(response.quantity()).isEqualTo(initialStock + 5);
       verify(repository).findById(anyLong());
@@ -168,7 +180,7 @@ class ProductApplicationServiceTest {
       when(repository.findById(anyLong()))
               .thenReturn(Optional.of(milho));
       assertThrows(InvalidMovementQuantityException.class,
-              () -> service.increase(1L, 0));
+              () -> increaseStockProductUseCase.execute(1L, 0));
       verify(repository, never()).save(any());
    }
 
@@ -178,7 +190,7 @@ class ProductApplicationServiceTest {
       when(repository.findById(1L)).thenReturn(Optional.empty());
 
       assertThrows(ResourceNotFoundException.class,
-              () -> service.increase(1L, 5));
+              () -> increaseStockProductUseCase.execute(1L, 5));
    }
 
    @Test
@@ -189,7 +201,7 @@ class ProductApplicationServiceTest {
       when(repository.findById(anyLong()))
               .thenReturn(Optional.of(milho));
 
-      var response = service.decrease(1L, 5);
+      var response = decreaseStockProductUseCase.execute(1L, 5);
 
       assertThat(response.quantity()).isEqualTo(initialStock - 5);
       verify(repository).findById(1L);
@@ -202,7 +214,7 @@ class ProductApplicationServiceTest {
               .thenReturn(Optional.of(milho));
 
       assertThrows(InsufficientStockException.class,
-              () -> service.decrease(1L, 100));
+              () -> decreaseStockProductUseCase.execute(1L, 100));
       verify(repository, never()).save(any());
    }
 
@@ -212,7 +224,7 @@ class ProductApplicationServiceTest {
       when(repository.findById(1L)).thenReturn(Optional.empty());
 
       assertThrows(ResourceNotFoundException.class,
-              () -> service.decrease(1L, 5));
+              () -> decreaseStockProductUseCase.execute(1L, 5));
 
       verify(repository, never()).save(any());
    }
