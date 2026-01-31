@@ -20,7 +20,7 @@ class EmployeeTest {
               "Antonio",
               "Sousa",
               new Cpf("39053344705"),
-              "27999282715",
+              new PhoneNumber("27999282715"),
               JobRole.ADMINISTRATOR,
               ContractType.CLT
       );
@@ -28,7 +28,7 @@ class EmployeeTest {
       assertEquals("Antonio", employee.getFirstName());
       assertEquals("Sousa", employee.getLastName());
       assertNotNull(employee.getCpf());
-      assertTrue(employee.getPhoneNumber().isPresent());
+      assertEquals("27999282715", employee.getPhoneNumber().value());
       assertEquals(Status.ACTIVE, employee.getStatus());
       assertEquals(LocalDate.now(), employee.getHireDate());
    }
@@ -41,7 +41,7 @@ class EmployeeTest {
                       null,
                       "Sousa",
                       new Cpf("39053344705"),
-                      "27999282715",
+                      new PhoneNumber("27999282715"),
                       JobRole.ADMINISTRATOR,
                       ContractType.CLT
               )
@@ -56,7 +56,7 @@ class EmployeeTest {
                       "An",
                       "Sousa",
                       new Cpf("39053344705"),
-                      "27999282715",
+                      new PhoneNumber("27999282715"),
                       JobRole.ADMINISTRATOR,
                       ContractType.CLT
               )
@@ -71,7 +71,7 @@ class EmployeeTest {
                       "Antonio",
                       null,
                       new Cpf("39053344705"),
-                      "27999282715",
+                      new PhoneNumber("27999282715"),
                       JobRole.ADMINISTRATOR,
                       ContractType.CLT
               )
@@ -86,7 +86,7 @@ class EmployeeTest {
                       "Antonio",
                       "Sousa",
                       null,
-                      "27999282715",
+                      new PhoneNumber("27999282715"),
                       JobRole.ADMINISTRATOR,
                       ContractType.CLT
               )
@@ -101,7 +101,7 @@ class EmployeeTest {
                       "Antonio",
                       "Sousa",
                       new Cpf("39053344705"),
-                      "27999282715",
+                      new PhoneNumber("27999282715"),
                       null,
                       ContractType.CLT
               )
@@ -116,7 +116,7 @@ class EmployeeTest {
                       "Antonio",
                       "Sousa",
                       new Cpf("39053344705"),
-                      "27999282715",
+                      new PhoneNumber("27999282715"),
                       JobRole.ADMINISTRATOR,
                       null
               )
@@ -135,7 +135,7 @@ class EmployeeTest {
               ContractType.CLT
       );
 
-      assertTrue(employee.getPhoneNumber().isEmpty());
+      assertNull(employee.getPhoneNumber());
    }
 
    @Test
@@ -149,11 +149,11 @@ class EmployeeTest {
               JobRole.ADMINISTRATOR,
               ContractType.CLT
       );
+      PhoneNumber phoneNumber = new PhoneNumber("27999282715");
 
-      employee.changePhoneNumber("27999282715");
+      employee.changePhoneNumber(phoneNumber);
 
-      assertTrue(employee.getPhoneNumber().isPresent());
-      assertEquals("27999282715", employee.getPhoneNumber().get().value());
+      assertEquals("27999282715", employee.getPhoneNumber().value());
    }
 
    @Test

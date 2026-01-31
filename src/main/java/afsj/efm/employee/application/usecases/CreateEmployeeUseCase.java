@@ -23,19 +23,25 @@ public class CreateEmployeeUseCase {
    @Transactional
    public EmployeeResponse execute(EmployeeRequest request) {
       Cpf newCpf = new Cpf(request.cpf());
-      PhoneNumber newPhoneNumber = new PhoneNumber(request.phoneNumber());
+
+      PhoneNumber newPhoneNumber = null;
+
+      String phoneNumberRequest = request.phoneNumber();
+
+      if (phoneNumberRequest != null && !phoneNumberRequest.isBlank())
+         newPhoneNumber = new PhoneNumber(phoneNumberRequest);
 
       if (repository.existsByCpf(newCpf))
          throw EmployeeConflicts.cpfAlreadyExists(newCpf);
 
-      if (repository.existsByPhoneNumber(newPhoneNumber))
+      if (newPhoneNumber != null && repository.existsByPhoneNumber(newPhoneNumber))
          throw EmployeeConflicts.phoneNumberAlreadyExists(newPhoneNumber);
 
       Employee newEmployee = new Employee(
               request.firstName(),
               request.lastName(),
               newCpf,
-              request.phoneNumber(),
+              newPhoneNumber,
               request.jobRole(),
               request.contractType()
       );

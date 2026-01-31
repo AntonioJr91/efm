@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class UpdateEmployeeUseCase {
@@ -29,20 +28,26 @@ public class UpdateEmployeeUseCase {
 
       if (request.phoneNumber() == null) return EmployeeMapper.toDtoUpdate(employee);
 
-      Optional<String> currentPhone = employee.getPhoneNumber().map(PhoneNumber::value);
+      String currentPhone = employee.getPhoneNumberValue();
+      String newPhoneRaw = request.phoneNumber();
 
-      boolean isDifferent = currentPhone
-              .map(phone -> !Objects.equals(request.phoneNumber(), phone))
-              .orElse(true);
+      if (newPhoneRaw.isBlank()) {
+         if (currentPhone != null) {
+            employee.changePhoneNumber(null);
+         }
+         return EmployeeMapper.toDtoUpdate(employee);
+      }
 
-      if (!isDifferent) return EmployeeMapper.toDtoUpdate(employee);
+      if (Objects.equals(currentPhone, newPhoneRaw)) {
+         return EmployeeMapper.toDtoUpdate(employee);
+      }
 
-      var newPhoneNumber = new PhoneNumber(request.phoneNumber());
+      var newPhoneNumber = new PhoneNumber(newPhoneRaw);
 
       if (repository.existsByPhoneNumber(newPhoneNumber))
          throw EmployeeConflicts.phoneNumberAlreadyExists(newPhoneNumber);
 
-      employee.changePhoneNumber(newPhoneNumber.value());
+      employee.changePhoneNumber(newPhoneNumber);
 
       return EmployeeMapper.toDtoUpdate(employee);
    }

@@ -3,7 +3,6 @@ package afsj.efm.employee.application.mappers;
 import afsj.efm.employee.application.dtos.EmployeeResponse;
 import afsj.efm.employee.application.dtos.EmployeeUpdateResponse;
 import afsj.efm.employee.domain.entities.Employee;
-import afsj.efm.employee.domain.entities.PhoneNumber;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public final class EmployeeMapper {
               employee.getFirstName(),
               employee.getLastName(),
               employee.getCpf().value(),
-              employee.getPhoneNumber().map(PhoneNumber::value).orElse(null),
+              employee.getPhoneNumberValue(),
               employee.getJobRole(),
               employee.getContractType(),
               employee.getHireDate(),
@@ -27,7 +26,7 @@ public final class EmployeeMapper {
       return list.stream().map(EmployeeMapper::toDto).toList();
    }
 
-   public static EmployeeUpdateResponse toDtoUpdate(Employee employee){
-      return new EmployeeUpdateResponse(employee.getPhoneNumber().map(PhoneNumber::value).orElse(null));
+   public static EmployeeUpdateResponse toDtoUpdate(Employee employee) {
+      return new EmployeeUpdateResponse(employee.getPhoneNumberValue());
    }
 }

@@ -33,7 +33,7 @@ class EmployeeJpaRepositoryTest {
               firstName,
               lastName,
               cpf,
-              phoneNumber.value(),
+              phoneNumber,
               jobRole,
               contractType
       );
@@ -48,7 +48,7 @@ class EmployeeJpaRepositoryTest {
       Assertions.assertEquals(firstName, saved.getFirstName());
       Assertions.assertEquals(lastName, saved.getLastName());
       Assertions.assertEquals(cpf, saved.getCpf());
-      Assertions.assertEquals(phoneNumber, saved.getPhoneNumber().orElseThrow());
+      Assertions.assertEquals(phoneNumber, saved.getPhoneNumber());
       Assertions.assertEquals(jobRole, saved.getJobRole());
       Assertions.assertEquals(contractType, saved.getContractType());
    }
@@ -77,13 +77,13 @@ class EmployeeJpaRepositoryTest {
    void shouldUpdateEmployeePhoneNumber() {
       Employee saved = repository.save(employee);
 
-      saved.changePhoneNumber("11999999999");
-
       PhoneNumber phoneNumber = new PhoneNumber("11999999999");
+
+      saved.changePhoneNumber(phoneNumber);
 
       Employee updated = repository.save(saved);
 
-      Assertions.assertEquals(phoneNumber, updated.getPhoneNumber().orElseThrow());
+      Assertions.assertEquals(phoneNumber, updated.getPhoneNumber());
       Assertions.assertEquals(saved.getId(), updated.getId());
    }
 

@@ -2,13 +2,10 @@ package afsj.efm.employee.application.dtos;
 
 import afsj.efm.employee.domain.enums.ContractType;
 import afsj.efm.employee.domain.enums.JobRole;
-import afsj.efm.employee.domain.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.Length;
-
-import java.time.LocalDate;
 
 public record EmployeeRequest(
         @NotBlank
@@ -23,7 +20,8 @@ public record EmployeeRequest(
         @Size(min = 11, max = 11)
         String cpf,
 
-        @Size(min = 11, max = 11)
+        @Pattern(regexp = "^$|^[1-9]{2}9\\d{8}$",
+                message = "Phone number must be empty or contain 11 digits (DD + 9XXXXXXXX)")
         String phoneNumber,
 
         @NotNull

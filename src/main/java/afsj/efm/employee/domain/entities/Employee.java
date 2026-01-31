@@ -7,7 +7,6 @@ import afsj.efm.employee.domain.exceptions.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Entity
 @Table(name = "employees")
@@ -49,7 +48,7 @@ public class Employee {
    protected Employee() {
    }
 
-   public Employee(String firstName, String lastName, Cpf cpf, String phoneNumber,
+   public Employee(String firstName, String lastName, Cpf cpf, PhoneNumber phoneNumber,
                    JobRole jobRole, ContractType contractType) {
       validateName(firstName, lastName);
       validateCpf(cpf);
@@ -59,7 +58,7 @@ public class Employee {
       this.firstName = firstName.trim();
       this.lastName = lastName.trim();
       this.cpf = cpf;
-      this.phoneNumber = createPhoneNumber(phoneNumber);
+      this.phoneNumber = phoneNumber;
       this.jobRole = jobRole;
       this.contractType = contractType;
       this.hireDate = LocalDate.now();
@@ -82,12 +81,16 @@ public class Employee {
       return cpf;
    }
 
-   public Optional<PhoneNumber> getPhoneNumber() {
-      return Optional.ofNullable(phoneNumber);
+   public PhoneNumber getPhoneNumber() {
+      return phoneNumber == null ? null : phoneNumber;
    }
 
-   public void changePhoneNumber(String phoneNumber) {
-      this.phoneNumber = createPhoneNumber(phoneNumber);
+   public String getPhoneNumberValue() {
+      return phoneNumber == null ? null : phoneNumber.value();
+   }
+
+   public void changePhoneNumber(PhoneNumber phoneNumber) {
+      this.phoneNumber = phoneNumber;
    }
 
    public JobRole getJobRole() {
@@ -133,13 +136,6 @@ public class Employee {
 
    private void validateCpf(Cpf cpf) {
       if (cpf == null) throw new InvalidCpfException("CPF_IS_REQUIRED");
-   }
-
-   private PhoneNumber createPhoneNumber(String phoneNumber) {
-      if (phoneNumber == null || phoneNumber.isBlank()) {
-         return null;
-      }
-      return new PhoneNumber(phoneNumber);
    }
 
    private void validateJobRole(JobRole jobRole) {
