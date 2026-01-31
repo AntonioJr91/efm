@@ -134,4 +134,16 @@ class EmployeeJpaRepositoryTest {
 
       Assertions.assertFalse(exists);
    }
+
+   @Test
+   @DisplayName("Should remove employee phone number")
+   void shouldRemoveEmployeePhoneNumber() {
+      Employee saved = repository.save(employee);
+
+      saved.changePhoneNumber(null);
+      Employee updated = repository.save(saved);
+
+      Assertions.assertNull(updated.getPhoneNumber());
+      Assertions.assertNull(updated.getPhoneNumberValue());
+   }
 }

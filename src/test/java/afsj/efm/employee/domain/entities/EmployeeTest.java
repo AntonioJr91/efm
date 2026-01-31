@@ -28,7 +28,7 @@ class EmployeeTest {
       assertEquals("Antonio", employee.getFirstName());
       assertEquals("Sousa", employee.getLastName());
       assertNotNull(employee.getCpf());
-      assertEquals("27999282715", employee.getPhoneNumber().value());
+      assertEquals("27999282715", employee.getPhoneNumberValue());
       assertEquals(Status.ACTIVE, employee.getStatus());
       assertEquals(LocalDate.now(), employee.getHireDate());
    }
@@ -124,7 +124,7 @@ class EmployeeTest {
    }
 
    @Test
-   @DisplayName("Should create employee without phone number when phone is null")
+   @DisplayName("Should allow null value for JPA hydration")
    void shouldCreateEmployeeWithoutPhoneNumberWhenPhoneIsNull() {
       Employee employee = new Employee(
               "Antonio",
@@ -136,6 +136,7 @@ class EmployeeTest {
       );
 
       assertNull(employee.getPhoneNumber());
+      assertNull(employee.getPhoneNumberValue());
    }
 
    @Test
@@ -153,7 +154,7 @@ class EmployeeTest {
 
       employee.changePhoneNumber(phoneNumber);
 
-      assertEquals("27999282715", employee.getPhoneNumber().value());
+      assertEquals("27999282715", employee.getPhoneNumberValue());
    }
 
    @Test
