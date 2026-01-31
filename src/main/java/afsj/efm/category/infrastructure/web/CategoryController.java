@@ -2,7 +2,10 @@ package afsj.efm.category.infrastructure.web;
 
 import afsj.efm.category.application.dtos.CategoryRequest;
 import afsj.efm.category.application.dtos.CategoryResponse;
-import afsj.efm.category.application.services.CategoryApplicationService;
+import afsj.efm.category.application.usecases.CreateCategoryUseCase;
+import afsj.efm.category.application.usecases.DeleteCategoryUseCase;
+import afsj.efm.category.application.usecases.GetCategoryByIdUseCase;
+import afsj.efm.category.application.usecases.ListCategoriesUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,25 +18,31 @@ import java.util.List;
 @RequestMapping("/categories")
 public class CategoryController {
 
-   private final CategoryApplicationService service;
+   private final CreateCategoryUseCase createCategoryUseCase;
+   private final ListCategoriesUseCase listCategories;
+   private final GetCategoryByIdUseCase getCategoryByIdUseCase;
+   private final DeleteCategoryUseCase deleteCategoryUseCase;
 
-   public CategoryController(CategoryApplicationService service) {
-      this.service = service;
+   public CategoryController(CreateCategoryUseCase createCategoryUseCase, ListCategoriesUseCase listCategories, GetCategoryByIdUseCase getCategoryByIdUseCase, DeleteCategoryUseCase deleteCategoryUseCase) {
+      this.createCategoryUseCase = createCategoryUseCase;
+      this.listCategories = listCategories;
+      this.getCategoryByIdUseCase = getCategoryByIdUseCase;
+      this.deleteCategoryUseCase = deleteCategoryUseCase;
    }
 
    @GetMapping
    public ResponseEntity<List<CategoryResponse>> listCategories() {
-      return ResponseEntity.ok().body(service.listCategories());
+      return ResponseEntity.ok().body(listCategories.execute());
    }
 
    @GetMapping("/{id}")
    public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
-      return ResponseEntity.ok(service.findById(id));
+      return ResponseEntity.ok(getCategoryByIdUseCase.execute(id));
    }
 
    @PostMapping
    public ResponseEntity<CategoryResponse> save(@RequestBody @Valid CategoryRequest request) {
-      var newCategory = service.save(request);
+      var newCategory = createCategoryUseCase.execute(request);
 
       URI location = ServletUriComponentsBuilder
               .fromCurrentRequest()
@@ -46,7 +55,7 @@ public class CategoryController {
 
    @DeleteMapping("/{id}")
    public ResponseEntity<Void> delete(@PathVariable Long id) {
-      service.delete(id);
+      deleteCategoryUseCase.execute(id);
       return ResponseEntity.noContent().build();
    }
 }
