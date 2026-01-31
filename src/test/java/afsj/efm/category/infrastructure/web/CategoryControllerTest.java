@@ -3,7 +3,10 @@ package afsj.efm.category.infrastructure.web;
 import afsj.efm.category.application.dtos.CategoryResponse;
 import afsj.efm.category.application.errors.CategoryConflicts;
 import afsj.efm.category.application.errors.CategoryNotFound;
-import afsj.efm.category.application.services.CategoryApplicationService;
+import afsj.efm.category.application.usecases.CreateCategoryUseCase;
+import afsj.efm.category.application.usecases.DeleteCategoryUseCase;
+import afsj.efm.category.application.usecases.GetCategoryByIdUseCase;
+import afsj.efm.category.application.usecases.ListCategoriesUseCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,7 +22,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CategoryControllerTest {
 
    @MockitoBean
-   CategoryApplicationService service;
+   private CreateCategoryUseCase createCategoryUseCase;
+   @MockitoBean
+   private ListCategoriesUseCase listCategories;
+   @MockitoBean
+   private GetCategoryByIdUseCase getCategoryByIdUseCase;
+   @MockitoBean
+   private DeleteCategoryUseCase deleteCategoryUseCase;
 
    @Autowired
    private MockMvc mockMvc;
@@ -34,7 +43,7 @@ class CategoryControllerTest {
    @Test
    @DisplayName("Should return 200 when find category by id")
    void return200FindById() throws Exception {
-      Mockito.when(service.findById(1L))
+      Mockito.when(getCategoryByIdUseCase.execute(1L))
               .thenReturn(new CategoryResponse(1L, "semente"));
 
       mockMvc.perform(get("/categories/1"))
@@ -44,7 +53,7 @@ class CategoryControllerTest {
    @Test
    @DisplayName("Should return 404 when not found by id")
    void returnHttpStatus404() throws Exception {
-      Mockito.when(service.findById(1L))
+      Mockito.when(getCategoryByIdUseCase.execute(1L))
               .thenThrow(CategoryNotFound.byId(1L));
 
       mockMvc.perform(get("/categories/1"))
@@ -54,7 +63,7 @@ class CategoryControllerTest {
    @Test
    @DisplayName("Should return 201 when creating category")
    void returnHttpStatus201() throws Exception {
-      Mockito.when(service.save(Mockito.any()))
+      Mockito.when(createCategoryUseCase.execute(Mockito.any()))
               .thenReturn(new CategoryResponse(1L, "semente"));
 
       mockMvc.perform(post("/categories")
@@ -68,7 +77,7 @@ class CategoryControllerTest {
    @Test
    @DisplayName("Should return 409 when category name already exists")
    void return409WhenDuplicateName() throws Exception {
-      Mockito.when(service.save(Mockito.any()))
+      Mockito.when(createCategoryUseCase.execute(Mockito.any()))
               .thenThrow(CategoryConflicts.nameAlreadyExists("semente"));
 
       mockMvc.perform(post("/categories")
@@ -93,7 +102,7 @@ class CategoryControllerTest {
    @Test
    @DisplayName("Should return 204 when deleting existing category")
    void return204WhenDelete() throws Exception {
-      Mockito.doNothing().when(service).delete(1L);
+      Mockito.doNothing().when(deleteCategoryUseCase).execute(1L);
 
       mockMvc.perform(delete("/categories/1"))
               .andExpect(status().isNoContent());
@@ -103,7 +112,7 @@ class CategoryControllerTest {
    @DisplayName("Should return 404 when deleting non-existing category")
    void return404WhenDeleteNotFound() throws Exception {
       Mockito.doThrow(CategoryNotFound.byId(1L))
-              .when(service).delete(1L);
+              .when(deleteCategoryUseCase).execute(1L);
 
       mockMvc.perform(delete("/categories/1"))
               .andExpect(status().isNotFound());

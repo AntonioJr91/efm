@@ -2,6 +2,10 @@ package afsj.efm.category.application.services;
 
 import afsj.efm.category.application.dtos.CategoryRequest;
 import afsj.efm.category.application.dtos.CategoryResponse;
+import afsj.efm.category.application.usecases.CreateCategoryUseCase;
+import afsj.efm.category.application.usecases.DeleteCategoryUseCase;
+import afsj.efm.category.application.usecases.GetCategoryByIdUseCase;
+import afsj.efm.category.application.usecases.ListCategoriesUseCase;
 import afsj.efm.category.domain.entities.Category;
 import afsj.efm.category.infrastructure.persistence.CategoryJpaRepository;
 import afsj.efm.shared.application.exceptions.ConflictException;
@@ -16,25 +20,30 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryApplicationServiceTest {
 
+   @InjectMocks
+   private CreateCategoryUseCase createCategoryUseCase;
+   @InjectMocks
+   private ListCategoriesUseCase listCategories;
+   @InjectMocks
+   private GetCategoryByIdUseCase getCategoryByIdUseCase;
+   @InjectMocks
+   private DeleteCategoryUseCase deleteCategoryUseCase;
    @Mock
    private CategoryJpaRepository repository;
-
-   @InjectMocks
-   private CategoryApplicationService service;
 
    @Test
    @DisplayName("Should return empty list when no categories exist")
    void returnEmptyList() {
       when(repository.findAll()).thenReturn(List.of());
 
-      var result = service.listCategories();
+      var result = listCategories.execute();
 
       assertThat(result).isEmpty();
       verify(repository).findAll();
@@ -50,7 +59,7 @@ class CategoryApplicationServiceTest {
 
       when(repository.findAll()).thenReturn(categories);
 
-      var result = service.listCategories();
+      var result = listCategories.execute();
 
       assertThat(result)
               .hasSize(2)
@@ -66,7 +75,7 @@ class CategoryApplicationServiceTest {
 
       when(repository.findById(1L)).thenReturn(Optional.of(category));
 
-      var result = service.findById(1L);
+      var result = getCategoryByIdUseCase.execute(1L);
 
       assertThat(result.name()).isEqualTo("semente");
       verify(repository).findById(1L);
@@ -78,7 +87,7 @@ class CategoryApplicationServiceTest {
    void returnNotFound() {
       when(repository.findById(1L)).thenReturn(Optional.empty());
 
-      assertThrows(ResourceNotFoundException.class, () -> service.findById(1L));
+      assertThrows(ResourceNotFoundException.class, () -> getCategoryByIdUseCase.execute(1L));
    }
 
    @Test
@@ -89,7 +98,7 @@ class CategoryApplicationServiceTest {
       when(repository.findByName("semente"))
               .thenReturn(Optional.of(new Category("semente")));
 
-      assertThrows(ConflictException.class, () -> service.save(request));
+      assertThrows(ConflictException.class, () -> createCategoryUseCase.execute(request));
 
       verify(repository, never()).save(any());
    }
@@ -105,7 +114,7 @@ class CategoryApplicationServiceTest {
       when(repository.save(any(Category.class)))
               .thenAnswer(invocation -> invocation.getArgument(0));
 
-      var result = service.save(request);
+      var result = createCategoryUseCase.execute(request);
 
       assertThat(result.name()).isEqualTo("semente");
       verify(repository).save(any(Category.class));
@@ -116,7 +125,7 @@ class CategoryApplicationServiceTest {
    void deleteCategory() {
       when(repository.existsById(1L)).thenReturn(true);
 
-      service.delete(1L);
+      deleteCategoryUseCase.execute(1L);
       verify(repository).deleteById(1L);
    }
 
@@ -125,7 +134,7 @@ class CategoryApplicationServiceTest {
    void returnErrorWhenDeleteCategory() {
       when(repository.existsById(1L)).thenReturn(false);
 
-      assertThrows(ResourceNotFoundException.class, () -> service.delete(1L));
+      assertThrows(ResourceNotFoundException.class, () -> deleteCategoryUseCase.execute(1L));
       verify(repository, never()).deleteById(1L);
    }
 }
