@@ -22,4 +22,12 @@ public record ServiceType(
         @Enumerated(EnumType.STRING)
         ServiceCategory serviceCategory
 ) {
+   public ServiceType {
+      if (name == null || name.isBlank())
+         throw new IllegalArgumentException("SERVICE_TYPE_NAME_REQUIRED");
+      if (description == null || description.isBlank())
+         throw new IllegalArgumentException("SERVICE_TYPE_DESCRIPTION_REQUIRED");
+      if (serviceCategory == null)
+         throw new IllegalArgumentException("SERVICE_CATEGORY_REQUIRED");
+   }
 }

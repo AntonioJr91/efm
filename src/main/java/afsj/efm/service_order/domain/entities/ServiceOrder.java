@@ -42,7 +42,7 @@ public class ServiceOrder {
            orphanRemoval = true,
            fetch = FetchType.LAZY
    )
-   private List<OrderItem> items = new ArrayList<>();
+   private List<ServiceOrderItem> items = new ArrayList<>();
 
    protected ServiceOrder() {
    }
@@ -88,11 +88,11 @@ public class ServiceOrder {
       return finishedAt;
    }
 
-   public List<OrderItem> getItems() {
+   public List<ServiceOrderItem> getItems() {
       return List.copyOf(items);
    }
 
-   public void addItem(OrderItem item) {
+   public void addItem(ServiceOrderItem item) {
       ensureEditable();
       this.items.add(item);
    }

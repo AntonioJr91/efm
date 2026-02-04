@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @Table(uniqueConstraints = @UniqueConstraint(
         columnNames = {"service_order_id", "product_id"}
 ))
-public class OrderItem {
+public class ServiceOrderItem {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +24,10 @@ public class OrderItem {
    @Column(nullable = false, updatable = true)
    private int quantity;
 
-   protected OrderItem() {
+   protected ServiceOrderItem() {
    }
 
-   public OrderItem(ServiceOrder serviceOrder, Product product, int quantity) {
+   ServiceOrderItem(ServiceOrder serviceOrder, Product product, int quantity) {
       validateServiceOrder(serviceOrder);
       validateProduct(product);
       validateQuantity(quantity);
@@ -61,7 +61,7 @@ public class OrderItem {
    @Override
    public boolean equals(Object o) {
       if (this == o) return true;
-      if (!(o instanceof OrderItem orderItem)) return false;
+      if (!(o instanceof ServiceOrderItem orderItem)) return false;
       return id != null && id.equals(orderItem.id);
    }
 

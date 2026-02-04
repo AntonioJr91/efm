@@ -5,7 +5,10 @@ import afsj.efm.employee.domain.entities.Employee;
 import afsj.efm.employee.domain.entities.PhoneNumber;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface EmployeeJpaRepository extends JpaRepository<Employee, Long> {
    Boolean existsByCpf(Cpf cpf);
    Boolean existsByPhoneNumber(PhoneNumber phoneNumber);
+   Optional<Employee> findByFirstName(String firstName);
 }
