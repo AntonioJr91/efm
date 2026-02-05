@@ -12,22 +12,22 @@ import jakarta.validation.constraints.Size;
 public record ServiceType(
         @NotBlank
         @Size(min = 3, max = 50)
-        String name,
+        String serviceTypeName,
 
         @NotBlank
         @Size(min = 3, max = 255)
-        String description,
+        String serviceTypeDescription,
 
         @NotNull
         @Enumerated(EnumType.STRING)
-        ServiceCategory serviceCategory
+        ServiceCategory serviceTypeCategory
 ) {
    public ServiceType {
-      if (name == null || name.isBlank())
+      if (serviceTypeName == null || serviceTypeName.isBlank())
          throw new IllegalArgumentException("SERVICE_TYPE_NAME_REQUIRED");
-      if (description == null || description.isBlank())
+      if (serviceTypeDescription == null || serviceTypeDescription.isBlank())
          throw new IllegalArgumentException("SERVICE_TYPE_DESCRIPTION_REQUIRED");
-      if (serviceCategory == null)
+      if (serviceTypeCategory == null)
          throw new IllegalArgumentException("SERVICE_CATEGORY_REQUIRED");
    }
 }

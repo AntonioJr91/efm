@@ -1,6 +1,7 @@
 package afsj.efm.service_order.domain.entities;
 
 import afsj.efm.employee.domain.entities.Employee;
+import afsj.efm.product.domain.entities.Product;
 import afsj.efm.service_order.domain.enums.StatusOrder;
 import jakarta.persistence.*;
 
@@ -92,9 +93,9 @@ public class ServiceOrder {
       return List.copyOf(items);
    }
 
-   public void addItem(ServiceOrderItem item) {
+   public void addItem(Product product, int quantity) {
       ensureEditable();
-      this.items.add(item);
+      this.items.add(new ServiceOrderItem(this, product, quantity));
    }
 
    public void complete(LocalDate finishedAt) {
