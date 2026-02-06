@@ -53,9 +53,18 @@ public class ServiceOrderItem {
       return quantity;
    }
 
-   public void changeQuantity(int quantity) {
+   public void increase(int quantity) {
       validateQuantity(quantity);
-      this.quantity = quantity;
+      this.quantity += quantity;
+   }
+
+   public void decrease(int quantity) {
+      validateQuantity(quantity);
+
+      int result = this.quantity - quantity;
+      validateResultingQuantity(result);
+
+      this.quantity = result;
    }
 
    @Override
@@ -81,4 +90,10 @@ public class ServiceOrderItem {
    private void validateQuantity(int quantity) {
       if (quantity <= 0) throw new IllegalArgumentException("QUANTITY_MUST_BE_GREATER_THAN_ZERO");
    }
+
+   private void validateResultingQuantity(int resultingQuantity) {
+      if (resultingQuantity <= 0)
+         throw new IllegalStateException("QUANTITY_CANNOT_BE_ZERO_OR_NEGATIVE");
+   }
+
 }

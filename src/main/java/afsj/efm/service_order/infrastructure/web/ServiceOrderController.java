@@ -19,6 +19,8 @@ public class ServiceOrderController {
    private final DeleteServiceOrderUseCase deleteServiceOrderUseCase;
    private final AddItemToServiceOrderUseCase addItemToServiceOrderUseCase;
    private final ListDetailsServiceOrdersUseCase listDetailsServiceOrdersUseCase;
+   private final IncreaseServiceOrderItemUseCase increaseServiceOrderItemUseCase;
+   private final DecreaseServiceOrderItemUseCase decreaseServiceOrderItemUseCase;
 
    public ServiceOrderController(
            ListServiceOrdersUseCase listServiceOrdersUseCase,
@@ -26,7 +28,7 @@ public class ServiceOrderController {
            CreateServiceOrderUseCase createServiceOrderUseCase,
            DeleteServiceOrderUseCase deleteServiceOrderUseCase,
            AddItemToServiceOrderUseCase addItemToServiceOrderUseCase,
-           ListDetailsServiceOrdersUseCase listDetailsServiceOrdersUseCase
+           ListDetailsServiceOrdersUseCase listDetailsServiceOrdersUseCase, IncreaseServiceOrderItemUseCase increaseServiceOrderItemUseCase, DecreaseServiceOrderItemUseCase decreaseServiceOrderItemUseCase
    ) {
       this.listServiceOrdersUseCase = listServiceOrdersUseCase;
       this.getServiceOrderByIdUseCase = getServiceOrderByIdUseCase;
@@ -34,6 +36,8 @@ public class ServiceOrderController {
       this.deleteServiceOrderUseCase = deleteServiceOrderUseCase;
       this.addItemToServiceOrderUseCase = addItemToServiceOrderUseCase;
       this.listDetailsServiceOrdersUseCase = listDetailsServiceOrdersUseCase;
+      this.increaseServiceOrderItemUseCase = increaseServiceOrderItemUseCase;
+      this.decreaseServiceOrderItemUseCase = decreaseServiceOrderItemUseCase;
    }
 
    @GetMapping
@@ -65,5 +69,23 @@ public class ServiceOrderController {
    @PostMapping("/{orderId}/add-item")
    public ResponseEntity<ServiceOrderDetailResponse> addItem(@RequestBody AddItemToServiceOrderRequest request) {
       return ResponseEntity.ok(addItemToServiceOrderUseCase.execute(request));
+   }
+
+   @PatchMapping("/{orderId}/items/{itemId}/increase")
+   public ResponseEntity<ServiceOrderDetailResponse> increase(
+           @PathVariable Long orderId,
+           @PathVariable Long itemId,
+           @RequestBody @Valid ChangeItemQuantityRequest request
+   ) {
+      return ResponseEntity.ok(increaseServiceOrderItemUseCase.execute(orderId, itemId, request.quantity()));
+   }
+
+   @PatchMapping("/{orderId}/items/{itemId}/decrease")
+   public ResponseEntity<ServiceOrderDetailResponse> decrease(
+           @PathVariable Long orderId,
+           @PathVariable Long itemId,
+           @RequestBody @Valid ChangeItemQuantityRequest request
+   ) {
+      return ResponseEntity.ok(decreaseServiceOrderItemUseCase.execute(orderId, itemId, request.quantity()));
    }
 }

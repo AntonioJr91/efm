@@ -98,6 +98,27 @@ public class ServiceOrder {
       this.items.add(new ServiceOrderItem(this, product, quantity));
    }
 
+   public void increaseItemQuantity(Long itemId, int quantity) {
+      ensureEditable();
+
+      ServiceOrderItem item = getItemOrThrow(itemId);
+      item.increase(quantity);
+   }
+
+   public void decreaseItemQuantity(Long itemId, int quantity) {
+      ensureEditable();
+
+      ServiceOrderItem item = getItemOrThrow(itemId);
+      item.decrease(quantity);
+   }
+
+   public void removeItem(Long itemId) {
+      ensureEditable();
+
+      ServiceOrderItem item = getItemOrThrow(itemId);
+      items.remove(item);
+   }
+
    public void complete(LocalDate finishedAt) {
       ensureInProgress();
       validateTerminateDate(finishedAt);
@@ -145,5 +166,12 @@ public class ServiceOrder {
       if (statusOrder != StatusOrder.IN_PROGRESS) {
          throw new IllegalStateException("SERVICE_ORDER_NOT_IN_PROGRESS");
       }
+   }
+
+   private ServiceOrderItem getItemOrThrow(Long itemId) {
+      return items.stream()
+              .filter(item -> item.getId().equals(itemId))
+              .findFirst()
+              .orElseThrow(() -> new IllegalArgumentException("SERVICE_ORDER_ITEM_NOT_FOUND"));
    }
 }

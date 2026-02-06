@@ -11,7 +11,7 @@ public final class ServiceOrderItemMapper {
       return new ServiceOrderItemResponse(
               item.getProduct().getId(),
               item.getProduct().getName(),
-              item.getProduct().getAvailableStock()
+              item.getQuantity()
       );
    }
 

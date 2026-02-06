@@ -55,6 +55,6 @@ values (1,
 insert into service_order_item (service_order_id,
                                 product_id,
                                 quantity)
-values (2,
+values (1,
         1,
         25);
