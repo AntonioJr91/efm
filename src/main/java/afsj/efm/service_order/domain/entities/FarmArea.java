@@ -1,5 +1,6 @@
 package afsj.efm.service_order.domain.entities;
 
+import afsj.efm.service_order.domain.exceptions.InvalidFarmAreaException;
 import jakarta.persistence.*;
 
 @Entity
@@ -41,8 +42,8 @@ public class FarmArea {
    }
 
    private void validateAreaName(String name) {
-      if (name == null || name.isBlank()) throw new IllegalArgumentException("AREA_NAME_IS_REQUIRED");
-      if (name.length() < 3) throw new IllegalArgumentException("AREA_NAME_TOO_SHORT");
-      if (name.length() > 50) throw new IllegalArgumentException("AREA_NAME_TOO_LONG");
+      if (name == null || name.isBlank()) throw new InvalidFarmAreaException("AREA_NAME_IS_REQUIRED");
+      if (name.length() < 3) throw new InvalidFarmAreaException("AREA_NAME_TOO_SHORT");
+      if (name.length() > 50) throw new InvalidFarmAreaException("AREA_NAME_TOO_LONG");
    }
 }

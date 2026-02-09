@@ -1,6 +1,7 @@
 package afsj.efm.service_order.domain.entities;
 
 import afsj.efm.service_order.domain.enums.ServiceCategory;
+import afsj.efm.service_order.domain.exceptions.InvalidServiceTypeException;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,10 +25,10 @@ public record ServiceType(
 ) {
    public ServiceType {
       if (serviceTypeName == null || serviceTypeName.isBlank())
-         throw new IllegalArgumentException("SERVICE_TYPE_NAME_REQUIRED");
+         throw new InvalidServiceTypeException("SERVICE_TYPE_NAME_REQUIRED");
       if (serviceTypeDescription == null || serviceTypeDescription.isBlank())
-         throw new IllegalArgumentException("SERVICE_TYPE_DESCRIPTION_REQUIRED");
+         throw new InvalidServiceTypeException("SERVICE_TYPE_DESCRIPTION_REQUIRED");
       if (serviceTypeCategory == null)
-         throw new IllegalArgumentException("SERVICE_CATEGORY_REQUIRED");
+         throw new InvalidServiceTypeException("SERVICE_CATEGORY_REQUIRED");
    }
 }

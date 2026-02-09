@@ -3,6 +3,7 @@ package afsj.efm.service_order.domain.entities;
 import afsj.efm.employee.domain.entities.Employee;
 import afsj.efm.product.domain.entities.Product;
 import afsj.efm.service_order.domain.enums.StatusOrder;
+import afsj.efm.service_order.domain.exceptions.InvalidServiceOrderException;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -139,32 +140,32 @@ public class ServiceOrder {
    }
 
    private void validateEmployee(Employee employee) {
-      if (employee == null) throw new IllegalArgumentException("EMPLOYEE_IS_REQUIRED");
+      if (employee == null) throw new InvalidServiceOrderException("EMPLOYEE_IS_REQUIRED");
    }
 
    private void validateFarmArea(FarmArea farmArea) {
-      if (farmArea == null) throw new IllegalArgumentException("FARM_AREA_IS_REQUIRED");
+      if (farmArea == null) throw new InvalidServiceOrderException("FARM_AREA_IS_REQUIRED");
    }
 
    private void validateServiceType(ServiceType serviceType) {
-      if (serviceType == null) throw new IllegalArgumentException("SERVICE_TYPE_IS_REQUIRED");
+      if (serviceType == null) throw new InvalidServiceOrderException("SERVICE_TYPE_IS_REQUIRED");
    }
 
    private void validateTerminateDate(LocalDate terminateDate) {
-      if (terminateDate.isBefore(createdAt)) throw new IllegalArgumentException("INVALID_TERMINATE_DATE");
+      if (terminateDate.isBefore(createdAt)) throw new InvalidServiceOrderException("INVALID_TERMINATE_DATE");
       if (statusOrder != StatusOrder.IN_PROGRESS)
-         throw new IllegalArgumentException("CANNOT_CHANGE_SERVICE_ORDER_COMPLETED_OR_CANCELED");
+         throw new InvalidServiceOrderException("CANNOT_CHANGE_SERVICE_ORDER_COMPLETED_OR_CANCELED");
    }
 
    private void ensureEditable() {
       if (statusOrder == StatusOrder.COMPLETED || statusOrder == StatusOrder.CANCELED) {
-         throw new IllegalStateException("SERVICE_ORDER_NOT_EDITABLE");
+         throw new InvalidServiceOrderException("SERVICE_ORDER_NOT_EDITABLE");
       }
    }
 
    private void ensureInProgress() {
       if (statusOrder != StatusOrder.IN_PROGRESS) {
-         throw new IllegalStateException("SERVICE_ORDER_NOT_IN_PROGRESS");
+         throw new InvalidServiceOrderException("SERVICE_ORDER_NOT_IN_PROGRESS");
       }
    }
 
@@ -172,6 +173,6 @@ public class ServiceOrder {
       return items.stream()
               .filter(item -> item.getId().equals(itemId))
               .findFirst()
-              .orElseThrow(() -> new IllegalArgumentException("SERVICE_ORDER_ITEM_NOT_FOUND"));
+              .orElseThrow(() -> new InvalidServiceOrderException("SERVICE_ORDER_ITEM_NOT_FOUND"));
    }
 }

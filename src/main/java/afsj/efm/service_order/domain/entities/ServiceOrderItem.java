@@ -1,6 +1,7 @@
 package afsj.efm.service_order.domain.entities;
 
 import afsj.efm.product.domain.entities.Product;
+import afsj.efm.service_order.domain.exceptions.InvalidServiceOrderItemException;
 import jakarta.persistence.*;
 
 @Entity
@@ -80,20 +81,20 @@ public class ServiceOrderItem {
    }
 
    private void validateServiceOrder(ServiceOrder serviceOrder) {
-      if (serviceOrder == null) throw new IllegalArgumentException("SERVICE_ORDER_IS_REQUIRED");
+      if (serviceOrder == null) throw new InvalidServiceOrderItemException("SERVICE_ORDER_IS_REQUIRED");
    }
 
    private void validateProduct(Product product) {
-      if (product == null) throw new IllegalArgumentException("PRODUCT_IS_REQUIRED");
+      if (product == null) throw new InvalidServiceOrderItemException("PRODUCT_IS_REQUIRED");
    }
 
    private void validateQuantity(int quantity) {
-      if (quantity <= 0) throw new IllegalArgumentException("QUANTITY_MUST_BE_GREATER_THAN_ZERO");
+      if (quantity <= 0) throw new InvalidServiceOrderItemException("QUANTITY_MUST_BE_GREATER_THAN_ZERO");
    }
 
    private void validateResultingQuantity(int resultingQuantity) {
       if (resultingQuantity <= 0)
-         throw new IllegalStateException("QUANTITY_CANNOT_BE_ZERO_OR_NEGATIVE");
+         throw new InvalidServiceOrderItemException("QUANTITY_CANNOT_BE_ZERO_OR_NEGATIVE");
    }
 
 }
