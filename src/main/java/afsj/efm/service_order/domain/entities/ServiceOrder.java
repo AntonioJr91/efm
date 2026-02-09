@@ -127,6 +127,17 @@ public class ServiceOrder {
       this.finishedAt = finishedAt;
    }
 
+   public void cancel(LocalDate finishedAt){
+      ensureEditable();
+      validateTerminateDate(finishedAt);
+      this.statusOrder = StatusOrder.CANCELED;
+      this.finishedAt = finishedAt;
+   }
+
+   public boolean isCompleted(){
+      return this.statusOrder == StatusOrder.COMPLETED;
+   }
+
    @Override
    public boolean equals(Object o) {
       if (this == o) return true;

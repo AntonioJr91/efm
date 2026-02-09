@@ -21,6 +21,8 @@ public class ServiceOrderController {
    private final ListDetailsServiceOrdersUseCase listDetailsServiceOrdersUseCase;
    private final IncreaseServiceOrderItemUseCase increaseServiceOrderItemUseCase;
    private final DecreaseServiceOrderItemUseCase decreaseServiceOrderItemUseCase;
+   private final CompleteOrderServiceUseCase completeOrderServiceUseCase;
+   private final CancelOrderServiceUseCase cancelOrderServiceUseCase;
 
    public ServiceOrderController(
            ListServiceOrdersUseCase listServiceOrdersUseCase,
@@ -28,7 +30,11 @@ public class ServiceOrderController {
            CreateServiceOrderUseCase createServiceOrderUseCase,
            DeleteServiceOrderUseCase deleteServiceOrderUseCase,
            AddItemToServiceOrderUseCase addItemToServiceOrderUseCase,
-           ListDetailsServiceOrdersUseCase listDetailsServiceOrdersUseCase, IncreaseServiceOrderItemUseCase increaseServiceOrderItemUseCase, DecreaseServiceOrderItemUseCase decreaseServiceOrderItemUseCase
+           ListDetailsServiceOrdersUseCase listDetailsServiceOrdersUseCase,
+           IncreaseServiceOrderItemUseCase increaseServiceOrderItemUseCase,
+           DecreaseServiceOrderItemUseCase decreaseServiceOrderItemUseCase,
+           CompleteOrderServiceUseCase completeOrderServiceUseCase,
+           CancelOrderServiceUseCase cancelOrderServiceUseCase
    ) {
       this.listServiceOrdersUseCase = listServiceOrdersUseCase;
       this.getServiceOrderByIdUseCase = getServiceOrderByIdUseCase;
@@ -38,6 +44,8 @@ public class ServiceOrderController {
       this.listDetailsServiceOrdersUseCase = listDetailsServiceOrdersUseCase;
       this.increaseServiceOrderItemUseCase = increaseServiceOrderItemUseCase;
       this.decreaseServiceOrderItemUseCase = decreaseServiceOrderItemUseCase;
+      this.completeOrderServiceUseCase = completeOrderServiceUseCase;
+      this.cancelOrderServiceUseCase = cancelOrderServiceUseCase;
    }
 
    @GetMapping
@@ -66,7 +74,7 @@ public class ServiceOrderController {
       return ResponseEntity.noContent().build();
    }
 
-   @PostMapping("/{orderId}/add-item")
+   @PostMapping("/add-item")
    public ResponseEntity<ServiceOrderDetailResponse> addItem(@RequestBody AddItemToServiceOrderRequest request) {
       return ResponseEntity.ok(addItemToServiceOrderUseCase.execute(request));
    }
@@ -87,5 +95,17 @@ public class ServiceOrderController {
            @RequestBody @Valid ChangeItemQuantityRequest request
    ) {
       return ResponseEntity.ok(decreaseServiceOrderItemUseCase.execute(orderId, itemId, request.quantity()));
+   }
+
+   @PatchMapping("/complete/{id}")
+   public ResponseEntity<Void> complete(@PathVariable Long id) {
+      completeOrderServiceUseCase.execute(id);
+      return ResponseEntity.noContent().build();
+   }
+
+   @PatchMapping("/cancel/{id}")
+   public ResponseEntity<Void> cancel(@PathVariable Long id) {
+      cancelOrderServiceUseCase.execute(id);
+      return ResponseEntity.noContent().build();
    }
 }

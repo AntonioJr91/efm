@@ -8,6 +8,7 @@ import afsj.efm.service_order.application.service_order.mappers.ServiceOrderMapp
 import afsj.efm.service_order.domain.entities.ServiceOrder;
 import afsj.efm.service_order.infrastructure.persistence.ServiceOrderJpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AddItemToServiceOrderUseCase {
@@ -20,6 +21,7 @@ public class AddItemToServiceOrderUseCase {
       this.productJpaRepository = productJpaRepository;
    }
 
+   @Transactional
    public ServiceOrderDetailResponse execute(AddItemToServiceOrderRequest request) {
       ServiceOrder serviceOrder = serviceOrderJpaRepository.findById(request.serviceOrderId())
               .orElseThrow(IllegalArgumentException::new);
