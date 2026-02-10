@@ -94,7 +94,7 @@ public class ServiceOrderItem {
 
    private void validateResultingQuantity(int resultingQuantity) {
       if (resultingQuantity < 0)
-         throw new InvalidServiceOrderItemException("QUANTITY_CANNOT_BE_ZERO_OR_NEGATIVE");
+         throw new InvalidServiceOrderItemException("QUANTITY_CANNOT_BE_NEGATIVE");
    }
 
 }
