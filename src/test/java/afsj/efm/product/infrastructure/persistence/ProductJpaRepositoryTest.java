@@ -63,7 +63,7 @@ class ProductJpaRepositoryTest {
    @Test
    @DisplayName("Should throw error when product name is duplicated")
    void notAllowDuplicate() {
-      var product2 = new Product("milho", 20, UnitOfMeasure.UNIT, category);
+      var product2 = new Product("semente", 20, UnitOfMeasure.UNIT, category);
 
       repository.saveAndFlush(product);
 

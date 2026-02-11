@@ -52,9 +52,11 @@ values (1,
         NULL);
 
 -- SERVICE ORDER ITEMS
-insert into service_order_item (service_order_id,
+insert into service_order_item (id,
+                                service_order_id,
                                 product_id,
                                 quantity)
-values (1,
+values ('550e8400-e29b-41d4-a716-446655440000',
+        1,
         1,
         25);
