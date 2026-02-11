@@ -7,6 +7,8 @@ import afsj.efm.service_order.infrastructure.persistence.ServiceOrderJpaReposito
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class DecreaseServiceOrderItemUseCase {
 
@@ -17,7 +19,7 @@ public class DecreaseServiceOrderItemUseCase {
    }
 
    @Transactional()
-   public ServiceOrderDetailResponse execute(Long orderId, Long itemId, int quantity) {
+   public ServiceOrderDetailResponse execute(Long orderId, UUID itemId, int quantity) {
       ServiceOrder serviceOrder = repository.findById(orderId)
               .orElseThrow(() -> new IllegalArgumentException("SERVICE_ORDER_NOT_FOUND"));
 

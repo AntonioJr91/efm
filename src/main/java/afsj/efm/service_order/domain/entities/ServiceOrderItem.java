@@ -4,6 +4,8 @@ import afsj.efm.product.domain.entities.Product;
 import afsj.efm.service_order.domain.exceptions.InvalidServiceOrderItemException;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(
         columnNames = {"service_order_id", "product_id"}
@@ -11,8 +13,7 @@ import jakarta.persistence.*;
 public class ServiceOrderItem {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private Long id;
+   private UUID id;
 
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
    @JoinColumn(name = "service_order_id", nullable = false)
@@ -33,12 +34,13 @@ public class ServiceOrderItem {
       validateProduct(product);
       validateQuantity(quantity);
 
+      this.id = UUID.randomUUID();
       this.serviceOrder = serviceOrder;
       this.product = product;
       this.quantity = quantity;
    }
 
-   public Long getId() {
+   public UUID getId() {
       return id;
    }
 

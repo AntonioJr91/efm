@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class ServiceOrder {
@@ -96,24 +97,25 @@ public class ServiceOrder {
 
    public void addItem(Product product, int quantity) {
       ensureEditable();
+      ensureProductNotAlreadyAdded(product);
       this.items.add(new ServiceOrderItem(this, product, quantity));
    }
 
-   public void increaseItemQuantity(Long itemId, int quantity) {
+   public void increaseItemQuantity(UUID itemId, int quantity) {
       ensureEditable();
 
       ServiceOrderItem item = getItemOrThrow(itemId);
       item.increase(quantity);
    }
 
-   public void decreaseItemQuantity(Long itemId, int quantity) {
+   public void decreaseItemQuantity(UUID itemId, int quantity) {
       ensureEditable();
 
       ServiceOrderItem item = getItemOrThrow(itemId);
       item.decrease(quantity);
    }
 
-   public void removeItem(Long itemId) {
+   public void removeItem(UUID itemId) {
       ensureEditable();
 
       ServiceOrderItem item = getItemOrThrow(itemId);
@@ -127,14 +129,14 @@ public class ServiceOrder {
       this.finishedAt = finishedAt;
    }
 
-   public void cancel(LocalDate finishedAt){
+   public void cancel(LocalDate finishedAt) {
       ensureEditable();
       validateTerminateDate(finishedAt);
       this.statusOrder = StatusOrder.CANCELED;
       this.finishedAt = finishedAt;
    }
 
-   public boolean isCompleted(){
+   public boolean isCompleted() {
       return this.statusOrder == StatusOrder.COMPLETED;
    }
 
@@ -180,10 +182,15 @@ public class ServiceOrder {
       }
    }
 
-   private ServiceOrderItem getItemOrThrow(Long itemId) {
+   private ServiceOrderItem getItemOrThrow(UUID itemId) {
       return items.stream()
               .filter(item -> item.getId().equals(itemId))
               .findFirst()
               .orElseThrow(() -> new InvalidServiceOrderException("SERVICE_ORDER_ITEM_NOT_FOUND"));
+   }
+
+   private void ensureProductNotAlreadyAdded(Product product) {
+      boolean exists = items.stream().anyMatch(item -> item.getProduct().equals(product));
+      if (exists) throw new InvalidServiceOrderException("PRODUCT_ALREADY_ADDED");
    }
 }

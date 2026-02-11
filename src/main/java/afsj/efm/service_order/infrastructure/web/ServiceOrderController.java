@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/serviceorder")
@@ -82,7 +83,7 @@ public class ServiceOrderController {
    @PatchMapping("/{orderId}/items/{itemId}/increase")
    public ResponseEntity<ServiceOrderDetailResponse> increase(
            @PathVariable Long orderId,
-           @PathVariable Long itemId,
+           @PathVariable UUID itemId,
            @RequestBody @Valid ChangeItemQuantityRequest request
    ) {
       return ResponseEntity.ok(increaseServiceOrderItemUseCase.execute(orderId, itemId, request.quantity()));
@@ -91,7 +92,7 @@ public class ServiceOrderController {
    @PatchMapping("/{orderId}/items/{itemId}/decrease")
    public ResponseEntity<ServiceOrderDetailResponse> decrease(
            @PathVariable Long orderId,
-           @PathVariable Long itemId,
+           @PathVariable UUID itemId,
            @RequestBody @Valid ChangeItemQuantityRequest request
    ) {
       return ResponseEntity.ok(decreaseServiceOrderItemUseCase.execute(orderId, itemId, request.quantity()));
