@@ -48,7 +48,7 @@ public class FarmAreaController {
       return ResponseEntity.status(HttpStatus.CREATED).body(createFarmAreaUseCase.execute(request));
    }
 
-   @DeleteMapping
+   @DeleteMapping("/{id}")
    public ResponseEntity<Void> delete(@PathVariable Long id) {
       deleteFarmAreaUseCase.execute(id);
       return ResponseEntity.noContent().build();
