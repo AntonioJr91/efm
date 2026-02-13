@@ -1,5 +1,6 @@
 package afsj.efm.service_order.application.service_order.usecases;
 
+import afsj.efm.service_order.application.service_order.errors.ServiceOrderNotFound;
 import afsj.efm.service_order.infrastructure.persistence.ServiceOrderJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,7 @@ public class DeleteServiceOrderUseCase {
 
    @Transactional
    public void execute(Long id) {
-      if (!repository.existsById(id)) throw new IllegalArgumentException();
+      if (!repository.existsById(id)) throw ServiceOrderNotFound.byId(id);
       repository.deleteById(id);
    }
 }

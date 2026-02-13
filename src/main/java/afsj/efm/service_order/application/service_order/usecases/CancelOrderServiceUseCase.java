@@ -1,5 +1,6 @@
 package afsj.efm.service_order.application.service_order.usecases;
 
+import afsj.efm.service_order.application.service_order.errors.ServiceOrderNotFound;
 import afsj.efm.service_order.infrastructure.persistence.ServiceOrderJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,9 +17,9 @@ public class CancelOrderServiceUseCase {
    }
 
    @Transactional
-   public void execute(Long id){
+   public void execute(Long id) {
       var serviceOrder = serviceOrderJpaRepository.findById(id)
-              .orElseThrow(IllegalArgumentException::new);
+              .orElseThrow(() -> ServiceOrderNotFound.byId(id));
 
       serviceOrder.cancel(LocalDate.now());
    }

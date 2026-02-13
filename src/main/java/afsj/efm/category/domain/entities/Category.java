@@ -1,6 +1,6 @@
 package afsj.efm.category.domain.entities;
 
-import afsj.efm.category.domain.exceptions.InvalidCategoryNameException;
+import afsj.efm.category.domain.exceptions.InvalidCategoryException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -48,8 +48,8 @@ public class Category {
    }
 
    private void validateName(String name){
-      if(name == null || name.isBlank()) throw new InvalidCategoryNameException("CATEGORY_NAME_REQUIRED");
-      if(name.length() < MIN_NAME_LENGTH) throw new InvalidCategoryNameException("CATEGORY_NAME_TOO_SHORT");
-      if(name.length() > MAX_NAME_LENGTH) throw new InvalidCategoryNameException("CATEGORY_NAME_TOO_LONG");
+      if(name == null || name.isBlank()) throw new InvalidCategoryException("CATEGORY_NAME_REQUIRED");
+      if(name.length() < MIN_NAME_LENGTH) throw new InvalidCategoryException("CATEGORY_NAME_TOO_SHORT");
+      if(name.length() > MAX_NAME_LENGTH) throw new InvalidCategoryException("CATEGORY_NAME_TOO_LONG");
    }
 }

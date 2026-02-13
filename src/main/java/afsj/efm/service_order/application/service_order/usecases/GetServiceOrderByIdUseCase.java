@@ -1,6 +1,7 @@
 package afsj.efm.service_order.application.service_order.usecases;
 
 import afsj.efm.service_order.application.service_order.dtos.ServiceOrderResponse;
+import afsj.efm.service_order.application.service_order.errors.ServiceOrderNotFound;
 import afsj.efm.service_order.application.service_order.mappers.ServiceOrderMapper;
 import afsj.efm.service_order.infrastructure.persistence.ServiceOrderJpaRepository;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,6 @@ public class GetServiceOrderByIdUseCase {
    @Transactional(readOnly = true)
    public ServiceOrderResponse execute(Long id) {
       return ServiceOrderMapper.toDto(repository.findById(id)
-              .orElseThrow(() -> new IllegalArgumentException()));
+              .orElseThrow(() -> ServiceOrderNotFound.byId(id)));
    }
 }

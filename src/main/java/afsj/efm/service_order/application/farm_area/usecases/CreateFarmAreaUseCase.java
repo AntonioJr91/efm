@@ -2,6 +2,7 @@ package afsj.efm.service_order.application.farm_area.usecases;
 
 import afsj.efm.service_order.application.farm_area.dtos.FarmAreaRequest;
 import afsj.efm.service_order.application.farm_area.dtos.FarmAreaResponse;
+import afsj.efm.service_order.application.farm_area.errors.FarmAreaConflict;
 import afsj.efm.service_order.application.farm_area.mappers.FarmAreaMapper;
 import afsj.efm.service_order.domain.entities.FarmArea;
 import afsj.efm.service_order.infrastructure.persistence.FarmAreaJpaRepository;
@@ -20,7 +21,9 @@ public class CreateFarmAreaUseCase {
    @Transactional
    public FarmAreaResponse execute(FarmAreaRequest request) {
       farmAreaJpaRepository.findByName(request.name())
-              .ifPresent(farmArea -> new IllegalArgumentException());
+              .ifPresent(farmArea -> {
+                 throw FarmAreaConflict.farmAreaAlreadyExists(request.name());
+              });
 
       var newFarmArea = new FarmArea(request.name());
 

@@ -1,6 +1,7 @@
 package afsj.efm.service_order.application.service_order.usecases;
 
 import afsj.efm.service_order.application.service_order.dtos.ServiceOrderDetailResponse;
+import afsj.efm.service_order.application.service_order.errors.ServiceOrderNotFound;
 import afsj.efm.service_order.application.service_order.mappers.ServiceOrderMapper;
 import afsj.efm.service_order.domain.entities.ServiceOrder;
 import afsj.efm.service_order.infrastructure.persistence.ServiceOrderJpaRepository;
@@ -21,7 +22,7 @@ public class DecreaseServiceOrderItemUseCase {
    @Transactional()
    public ServiceOrderDetailResponse execute(Long orderId, UUID itemId, int quantity) {
       ServiceOrder serviceOrder = repository.findById(orderId)
-              .orElseThrow(() -> new IllegalArgumentException("SERVICE_ORDER_NOT_FOUND"));
+              .orElseThrow(() -> ServiceOrderNotFound.byId(orderId));
 
       serviceOrder.decreaseItemQuantity(itemId, quantity);
       repository.save(serviceOrder);

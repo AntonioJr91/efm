@@ -1,5 +1,6 @@
 package afsj.efm.service_order.application.farm_area.usecases;
 
+import afsj.efm.service_order.application.farm_area.errors.FarmAreaNotFound;
 import afsj.efm.service_order.infrastructure.persistence.FarmAreaJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,7 @@ public class DeleteFarmAreaUseCase {
 
    @Transactional
    public void execute(Long id) {
-      if (!farmAreaJpaRepository.existsById(id)) throw new IllegalArgumentException();
+      if (!farmAreaJpaRepository.existsById(id)) throw FarmAreaNotFound.byId(id);
       farmAreaJpaRepository.deleteById(id);
    }
 }

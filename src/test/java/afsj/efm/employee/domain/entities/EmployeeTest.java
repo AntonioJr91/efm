@@ -36,7 +36,7 @@ class EmployeeTest {
    @Test
    @DisplayName("Should throw error when first name is null")
    void shouldThrowErrorWhenFirstNameIsNull() {
-      assertThrows(InvalidEmployeeNameException.class, () ->
+      assertThrows(InvalidEmployeeException.class, () ->
               new Employee(
                       null,
                       "Sousa",
@@ -51,7 +51,7 @@ class EmployeeTest {
    @Test
    @DisplayName("Should throw error when first name is too short")
    void shouldThrowErrorWhenFirstNameIsTooShort() {
-      assertThrows(InvalidEmployeeNameException.class, () ->
+      assertThrows(InvalidEmployeeException.class, () ->
               new Employee(
                       "An",
                       "Sousa",
@@ -66,7 +66,7 @@ class EmployeeTest {
    @Test
    @DisplayName("Should throw error when last name is null")
    void shouldThrowErrorWhenLastNameIsNull() {
-      assertThrows(InvalidEmployeeNameException.class, () ->
+      assertThrows(InvalidEmployeeException.class, () ->
               new Employee(
                       "Antonio",
                       null,

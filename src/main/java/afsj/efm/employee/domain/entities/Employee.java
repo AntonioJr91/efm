@@ -125,13 +125,13 @@ public class Employee {
    }
 
    private void validateName(String firstName, String lastName) {
-      if (firstName == null) throw new InvalidEmployeeNameException("FIRST_NAME_IS_REQUIRED");
-      if (firstName.length() < 3) throw new InvalidEmployeeNameException("FIRST_NAME_TOO_SHORT");
-      if (firstName.length() > 50) throw new InvalidEmployeeNameException("FIRST_NAME_TOO_LONG");
+      if (firstName == null) throw new InvalidEmployeeException("FIRST_NAME_IS_REQUIRED");
+      if (firstName.length() < 3) throw new InvalidEmployeeException("FIRST_NAME_TOO_SHORT");
+      if (firstName.length() > 50) throw new InvalidEmployeeException("FIRST_NAME_TOO_LONG");
 
-      if (lastName == null) throw new InvalidEmployeeNameException("LAST_NAME_IS_REQUIRED");
-      if (lastName.length() < 3) throw new InvalidEmployeeNameException("LAST_NAME_TOO_SHORT");
-      if (lastName.length() > 50) throw new InvalidEmployeeNameException("LAST_NAME_TOO_LONG");
+      if (lastName == null) throw new InvalidEmployeeException("LAST_NAME_IS_REQUIRED");
+      if (lastName.length() < 3) throw new InvalidEmployeeException("LAST_NAME_TOO_SHORT");
+      if (lastName.length() > 50) throw new InvalidEmployeeException("LAST_NAME_TOO_LONG");
    }
 
    private void validateCpf(Cpf cpf) {
@@ -139,17 +139,17 @@ public class Employee {
    }
 
    private void validateJobRole(JobRole jobRole) {
-      if (jobRole == null) throw new InvalidJobRoleException("JOB_ROLE_IS_REQUIRED");
+      if (jobRole == null) throw new InvalidEmployeeException("JOB_ROLE_IS_REQUIRED");
    }
 
    private void validateContractType(ContractType contractType) {
-      if (contractType == null) throw new InvalidContractTypeException("CONTRACT_TYPE_IS_REQUIRED");
+      if (contractType == null) throw new InvalidEmployeeException("CONTRACT_TYPE_IS_REQUIRED");
    }
 
    private void validateTerminationDate(LocalDate terminationDate) {
-      if (terminationDate == null) throw new InvalidTerminationDateException("TERMINATION_DATE_IS_REQUIRED");
+      if (terminationDate == null) throw new InvalidEmployeeException("TERMINATION_DATE_IS_REQUIRED");
       if (!terminationDate.isAfter(hireDate))
-         throw new InvalidTerminationDateException("TERMINATION_DATE_MUST_BE_AFTER_HIRE_DATE");
-      if (this.status == Status.INACTIVE) throw new InvalidTerminationDateException("EMPLOYEE_ALREADY_TERMINATED");
+         throw new InvalidEmployeeException("TERMINATION_DATE_MUST_BE_AFTER_HIRE_DATE");
+      if (this.status == Status.INACTIVE) throw new InvalidEmployeeException("EMPLOYEE_ALREADY_TERMINATED");
    }
 }
