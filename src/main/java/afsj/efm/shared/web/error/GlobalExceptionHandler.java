@@ -1,9 +1,8 @@
 package afsj.efm.shared.web.error;
 
-import afsj.efm.product.domain.exceptions.InsufficientStockException;
-import afsj.efm.product.domain.exceptions.InvalidMovementQuantityException;
 import afsj.efm.shared.application.exceptions.ConflictException;
 import afsj.efm.shared.application.exceptions.ResourceNotFoundException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 @RestControllerAdvice
@@ -49,13 +49,34 @@ public class GlobalExceptionHandler {
            HttpMessageNotReadableException ex,
            HttpServletRequest request
    ) {
+      Throwable cause = ex.getCause();
+      String message = "Malformed JSON request";
+
+      if (cause instanceof InvalidFormatException ife) {
+
+         if (ife.getTargetType().isEnum()) {
+
+            String fieldName = ife.getPath().get(0).getFieldName();
+            Object invalidValue = ife.getValue();
+            Object[] allowedValues = ife.getTargetType().getEnumConstants();
+
+            message = String.format(
+                    "Invalid value '%s' for field '%s'. Allowed values: %s",
+                    invalidValue,
+                    fieldName,
+                    Arrays.toString(allowedValues)
+            );
+         }
+      }
+
       StandardError error = new StandardError(
               Instant.now(),
               HttpStatus.BAD_REQUEST.value(),
               HttpStatus.BAD_REQUEST.getReasonPhrase(),
-              "Malformed JSON request",
+              message,
               request.getRequestURI()
       );
+
       return ResponseEntity.badRequest().body(error);
    }
 
@@ -102,21 +123,5 @@ public class GlobalExceptionHandler {
               request.getRequestURI()
       );
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-   }
-
-   @ExceptionHandler(InsufficientStockException.class)
-   public ResponseEntity<StandardError> handleInsufficientStock(
-           RuntimeException ex,
-           HttpServletRequest request
-   ) {
-      StandardError error = new StandardError(
-              Instant.now(),
-              HttpStatus.BAD_REQUEST.value(),
-              HttpStatus.BAD_REQUEST.getReasonPhrase(),
-              "Not enough stock available to complete the operation",
-              request.getRequestURI()
-      );
-
-      return ResponseEntity.badRequest().body(error);
    }
 }

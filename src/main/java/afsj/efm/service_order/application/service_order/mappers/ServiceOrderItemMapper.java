@@ -9,6 +9,7 @@ public final class ServiceOrderItemMapper {
 
    public static ServiceOrderItemResponse toDto(ServiceOrderItem item) {
       return new ServiceOrderItemResponse(
+              item.getId(),
               item.getProduct().getId(),
               item.getProduct().getName(),
               item.getQuantity()

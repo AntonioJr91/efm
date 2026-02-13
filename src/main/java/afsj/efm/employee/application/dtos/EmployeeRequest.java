@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.br.CPF;
 
 public record EmployeeRequest(
         @NotBlank
@@ -18,6 +19,7 @@ public record EmployeeRequest(
 
         @NotNull
         @Size(min = 11, max = 11)
+        @CPF
         String cpf,
 
         @Pattern(regexp = "^$|^[1-9]{2}9\\d{8}$",

@@ -9,19 +9,23 @@ import afsj.efm.service_order.application.service_order.mappers.ServiceOrderMapp
 import afsj.efm.service_order.domain.entities.ServiceOrder;
 import afsj.efm.service_order.domain.entities.ServiceType;
 import afsj.efm.service_order.infrastructure.persistence.FarmAreaJpaRepository;
+import afsj.efm.service_order.infrastructure.persistence.ServiceOrderJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CreateServiceOrderUseCase {
 
+   private final ServiceOrderJpaRepository repository;
    private final EmployeeJpaRepository employeeJpaRepository;
    private final FarmAreaJpaRepository farmAreaJpaRepository;
 
    public CreateServiceOrderUseCase(
+           ServiceOrderJpaRepository repository,
            EmployeeJpaRepository employeeJpaRepository,
            FarmAreaJpaRepository farmAreaJpaRepository
    ) {
+      this.repository = repository;
       this.employeeJpaRepository = employeeJpaRepository;
       this.farmAreaJpaRepository = farmAreaJpaRepository;
    }
@@ -41,6 +45,8 @@ public class CreateServiceOrderUseCase {
       );
 
       var serviceOrder = new ServiceOrder(employee, farmArea, serviceType);
+
+      repository.save(serviceOrder);
 
       return ServiceOrderMapper.toDto(serviceOrder);
    }

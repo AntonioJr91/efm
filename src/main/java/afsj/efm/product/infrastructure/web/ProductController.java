@@ -1,6 +1,5 @@
 package afsj.efm.product.infrastructure.web;
 
-import afsj.efm.category.application.usecases.DeleteCategoryUseCase;
 import afsj.efm.product.application.dtos.*;
 import afsj.efm.product.application.usecases.*;
 import jakarta.validation.Valid;
@@ -18,15 +17,22 @@ public class ProductController {
    private final ListProductsUseCase listProducts;
    private final GetProductByIdUseCase getProductByIdUseCase;
    private final CreateProductUseCase createProductUseCase;
-   private final DeleteCategoryUseCase deleteCategoryUseCase;
+   private final DeleteProductUseCase deleteProductUseCase;
    private final IncreaseStockProductUseCase increaseStockProductUseCase;
    private final DecreaseStockProductUseCase decreaseStockProductUseCase;
 
-   public ProductController(ListProductsUseCase listProducts, GetProductByIdUseCase getProductByIdUseCase, CreateProductUseCase createProductUseCase, DeleteCategoryUseCase deleteCategoryUseCase, IncreaseStockProductUseCase increaseStockProductUseCase, DecreaseStockProductUseCase decreaseStockProductUseCase) {
+   public ProductController(
+           ListProductsUseCase listProducts,
+           GetProductByIdUseCase getProductByIdUseCase,
+           CreateProductUseCase createProductUseCase,
+           DeleteProductUseCase deleteProductUseCase,
+           IncreaseStockProductUseCase increaseStockProductUseCase,
+           DecreaseStockProductUseCase decreaseStockProductUseCase
+   ) {
       this.listProducts = listProducts;
       this.getProductByIdUseCase = getProductByIdUseCase;
       this.createProductUseCase = createProductUseCase;
-      this.deleteCategoryUseCase = deleteCategoryUseCase;
+      this.deleteProductUseCase = deleteProductUseCase;
       this.increaseStockProductUseCase = increaseStockProductUseCase;
       this.decreaseStockProductUseCase = decreaseStockProductUseCase;
    }
@@ -71,7 +77,7 @@ public class ProductController {
 
    @DeleteMapping("/{id}")
    public ResponseEntity<Void> delete(@PathVariable Long id) {
-      deleteCategoryUseCase.execute(id);
+      deleteProductUseCase.execute(id);
       return ResponseEntity.noContent().build();
    }
 }
