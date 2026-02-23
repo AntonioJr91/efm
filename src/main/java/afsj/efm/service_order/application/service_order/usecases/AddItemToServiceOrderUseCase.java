@@ -31,6 +31,8 @@ public class AddItemToServiceOrderUseCase {
       Product product = productJpaRepository.findById(request.productId())
               .orElseThrow(() -> ProductNotFound.byId(request.productId()));
 
+      product.decreaseStock(request.quantity());
+
       serviceOrder.addItem(product, request.quantity());
 
       return ServiceOrderMapper.toDtoDetail(serviceOrder);
