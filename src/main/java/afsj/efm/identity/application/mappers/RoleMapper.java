@@ -1,7 +1,7 @@
-package afsj.efm.login.application.mappers;
+package afsj.efm.identity.application.mappers;
 
-import afsj.efm.login.application.dtos.RoleResponse;
-import afsj.efm.login.domain.Role;
+import afsj.efm.identity.application.dtos.RoleResponse;
+import afsj.efm.identity.domain.Role;
 
 import java.util.List;
 

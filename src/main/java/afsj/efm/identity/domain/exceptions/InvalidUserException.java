@@ -1,4 +1,4 @@
-package afsj.efm.login.domain.exceptions;
+package afsj.efm.identity.domain.exceptions;
 
 public class InvalidUserException extends RuntimeException {
    public InvalidUserException(String message) {

@@ -1,11 +1,11 @@
-package afsj.efm.login.application.usecases;
+package afsj.efm.identity.application.usecases;
 
-import afsj.efm.login.application.dtos.RoleRequest;
-import afsj.efm.login.application.dtos.RoleResponse;
-import afsj.efm.login.application.errors.RoleConflicts;
-import afsj.efm.login.application.mappers.RoleMapper;
-import afsj.efm.login.domain.Role;
-import afsj.efm.login.infrastructure.persistence.RoleJpaRepository;
+import afsj.efm.identity.application.dtos.RoleRequest;
+import afsj.efm.identity.application.dtos.RoleResponse;
+import afsj.efm.identity.application.errors.RoleConflicts;
+import afsj.efm.identity.application.mappers.RoleMapper;
+import afsj.efm.identity.domain.Role;
+import afsj.efm.identity.infrastructure.persistence.RoleJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

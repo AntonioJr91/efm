@@ -1,6 +1,6 @@
-package afsj.efm.login.infrastructure.persistence;
+package afsj.efm.identity.infrastructure.persistence;
 
-import afsj.efm.login.domain.Role;
+import afsj.efm.identity.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleJpaRepository extends JpaRepository<Role, Long> {

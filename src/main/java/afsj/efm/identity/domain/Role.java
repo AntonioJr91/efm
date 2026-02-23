@@ -1,6 +1,6 @@
-package afsj.efm.login.domain;
+package afsj.efm.identity.domain;
 
-import afsj.efm.login.domain.exceptions.InvalidRoleException;
+import afsj.efm.identity.domain.exceptions.InvalidRoleException;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

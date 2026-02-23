@@ -1,4 +1,4 @@
-package afsj.efm.login.application.dtos;
+package afsj.efm.identity.application.dtos;
 
 public record RoleResponse(
         Long id,

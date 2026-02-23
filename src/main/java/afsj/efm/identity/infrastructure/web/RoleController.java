@@ -1,11 +1,11 @@
-package afsj.efm.login.infrastructure.web;
+package afsj.efm.identity.infrastructure.web;
 
-import afsj.efm.login.application.dtos.RoleRequest;
-import afsj.efm.login.application.dtos.RoleResponse;
-import afsj.efm.login.application.usecases.CreateRoleUseCase;
-import afsj.efm.login.application.usecases.DeleteRoleUseCase;
-import afsj.efm.login.application.usecases.GetRoleByIdUseCase;
-import afsj.efm.login.application.usecases.ListRolesUseCase;
+import afsj.efm.identity.application.dtos.RoleRequest;
+import afsj.efm.identity.application.dtos.RoleResponse;
+import afsj.efm.identity.application.usecases.CreateRoleUseCase;
+import afsj.efm.identity.application.usecases.DeleteRoleUseCase;
+import afsj.efm.identity.application.usecases.GetRoleByIdUseCase;
+import afsj.efm.identity.application.usecases.ListRolesUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

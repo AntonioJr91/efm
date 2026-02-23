@@ -1,4 +1,4 @@
-package afsj.efm.login.domain;
+package afsj.efm.identity.domain;
 
 import jakarta.persistence.*;
 

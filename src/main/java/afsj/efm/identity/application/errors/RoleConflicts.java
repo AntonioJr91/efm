@@ -1,4 +1,4 @@
-package afsj.efm.login.application.errors;
+package afsj.efm.identity.application.errors;
 
 import afsj.efm.shared.application.exceptions.ConflictException;
 
