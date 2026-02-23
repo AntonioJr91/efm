@@ -1,5 +1,6 @@
 package afsj.efm.login.domain;
 
+import afsj.efm.login.domain.exceptions.InvalidRoleException;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class User {
    }
 
    public User(String username, String password) {
+      validateUsername(username);
       this.username = username;
       this.password = password;
    }
@@ -40,5 +42,11 @@ public class User {
 
    public String getPassword() {
       return password;
+   }
+
+   private void validateUsername(String name) {
+      if (name == null || name.isBlank()) throw new InvalidRoleException("USER_NAME_IS_REQUIRED");
+      if (name.length() < 3) throw new InvalidRoleException("USER_NAME_TOO_SHORT");
+      if (name.length() > 50) throw new InvalidRoleException("USER_NAME_TOO_LONG");
    }
 }
