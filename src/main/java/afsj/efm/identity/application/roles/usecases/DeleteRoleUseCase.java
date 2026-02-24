@@ -1,6 +1,6 @@
-package afsj.efm.identity.application.usecases;
+package afsj.efm.identity.application.roles.usecases;
 
-import afsj.efm.identity.application.errors.RoleNotFound;
+import afsj.efm.identity.application.roles.errors.RoleNotFound;
 import afsj.efm.identity.infrastructure.persistence.RoleJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

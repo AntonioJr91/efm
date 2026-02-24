@@ -1,4 +1,4 @@
-package afsj.efm.identity.application.errors;
+package afsj.efm.identity.application.roles.errors;
 
 import afsj.efm.shared.application.exceptions.ResourceNotFoundException;
 

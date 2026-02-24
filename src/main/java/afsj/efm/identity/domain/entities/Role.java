@@ -1,4 +1,4 @@
-package afsj.efm.identity.domain;
+package afsj.efm.identity.domain.entities;
 
 import afsj.efm.identity.domain.exceptions.InvalidRoleException;
 import jakarta.persistence.*;
