@@ -2,6 +2,7 @@ package afsj.efm.identity.application.users.mappers;
 
 import afsj.efm.identity.application.users.dtos.UserResponse;
 import afsj.efm.identity.domain.entities.User;
+import afsj.efm.identity.domain.entities.UsersRoles;
 
 import java.util.List;
 

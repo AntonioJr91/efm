@@ -44,6 +44,21 @@ public class User {
       return password;
    }
 
+   public List<Role> getRoles() {
+      return usersRoles
+              .stream()
+              .map(UsersRoles::getRole)
+              .toList();
+   }
+
+   public void addRole(Role role){
+      boolean alreadyAssigned = usersRoles.stream()
+              .anyMatch(ur -> ur.getRole().equals(role));
+      if(alreadyAssigned) return;
+
+      usersRoles.add(new UsersRoles(this, role));
+   }
+
    private void validateUsername(String name) {
       if (name == null || name.isBlank()) throw new InvalidRoleException("USER_NAME_IS_REQUIRED");
       if (name.length() < 3) throw new InvalidRoleException("USER_NAME_TOO_SHORT");
