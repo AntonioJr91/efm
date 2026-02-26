@@ -61,9 +61,17 @@ values ('550e8400-e29b-41d4-a716-446655440000',
         1,
         25);
 
--- ROLES ADMIN / USER
+-- ROLES ADMIN & USER
 insert into roles (name)
 values ('ADMIN');
 
 insert into roles (name)
-values ('USER')
+values ('USER');
+
+-- USER ADMIN
+insert into users(username, password)
+values('admin', '$2y$10$9/aZt3ZnLfr398rJ9obD4O9uBUkH4ZpDI.87JmR4BddhZmxOjjLJq');
+
+-- RELACIONAR ADMIN AO USER ADMIN
+insert into users_roles (user_id, role_id)
+values (1, 1);

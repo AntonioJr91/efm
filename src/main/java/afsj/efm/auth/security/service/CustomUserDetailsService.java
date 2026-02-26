@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
    @Override
    @Transactional(readOnly = true)
    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-      User user = repository.findByUsername(username)
+      User user = repository.findByUsernameWithRoles(username)
               .orElseThrow(() -> UserNotFound.byName(username));
 
       return new SecurityUSer(user);
