@@ -96,7 +96,7 @@ class EmployeeTest {
    @Test
    @DisplayName("Should throw error when job role is null")
    void shouldThrowErrorWhenJobRoleIsNull() {
-      assertThrows(InvalidJobRoleException.class, () ->
+      assertThrows(InvalidEmployeeException.class, () ->
               new Employee(
                       "Antonio",
                       "Sousa",
@@ -111,7 +111,7 @@ class EmployeeTest {
    @Test
    @DisplayName("Should throw error when contract type is null")
    void shouldThrowErrorWhenContractTypeIsNull() {
-      assertThrows(InvalidContractTypeException.class, () ->
+      assertThrows(InvalidEmployeeException.class, () ->
               new Employee(
                       "Antonio",
                       "Sousa",
@@ -189,7 +189,7 @@ class EmployeeTest {
               ContractType.CLT
       );
 
-      assertThrows(InvalidTerminationDateException.class, () ->
+      assertThrows(InvalidEmployeeException.class, () ->
               employee.terminate(LocalDate.now())
       );
    }
@@ -208,7 +208,7 @@ class EmployeeTest {
 
       employee.terminate(LocalDate.now().plusDays(1));
 
-      assertThrows(InvalidTerminationDateException.class, () ->
+      assertThrows(InvalidEmployeeException.class, () ->
               employee.terminate(LocalDate.now().plusDays(2))
       );
    }
