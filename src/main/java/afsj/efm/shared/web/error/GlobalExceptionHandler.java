@@ -1,5 +1,6 @@
 package afsj.efm.shared.web.error;
 
+import afsj.efm.shared.application.exceptions.BusinessException;
 import afsj.efm.shared.application.exceptions.ConflictException;
 import afsj.efm.shared.application.exceptions.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -108,6 +109,22 @@ public class GlobalExceptionHandler {
               request.getRequestURI()
       );
       return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+   }
+
+   @ExceptionHandler(BusinessException.class)
+   public ResponseEntity<StandardError> handleBusiness(
+           BusinessException ex,
+           HttpServletRequest request
+   ) {
+      StandardError error = new StandardError(
+              Instant.now(),
+              HttpStatus.BAD_REQUEST.value(),
+              HttpStatus.BAD_REQUEST.getReasonPhrase(),
+              ex.getMessage(),
+              request.getRequestURI()
+      );
+
+      return ResponseEntity.badRequest().body(error);
    }
 
    @ExceptionHandler(Exception.class)

@@ -1,6 +1,5 @@
 package afsj.efm.product.infrastructure.web;
 
-import afsj.efm.category.application.usecases.DeleteCategoryUseCase;
 import afsj.efm.product.application.dtos.ProductResponse;
 import afsj.efm.product.application.dtos.StockUpdateResponse;
 import afsj.efm.product.application.errors.ProductConflicts;
@@ -8,10 +7,12 @@ import afsj.efm.product.application.errors.ProductNotFound;
 import afsj.efm.product.application.usecases.*;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import afsj.efm.product.domain.exceptions.InsufficientStockException;
+import afsj.efm.shared.application.exceptions.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class ProductControllerTest {
 
    @MockitoBean
@@ -31,7 +33,7 @@ class ProductControllerTest {
    @MockitoBean
    private CreateProductUseCase createProductUseCase;
    @MockitoBean
-   private DeleteCategoryUseCase deleteCategoryUseCase;
+   private DeleteProductUseCase deleteProductUseCase;
    @MockitoBean
    private IncreaseStockProductUseCase increaseStockProductUseCase;
    @MockitoBean
@@ -187,7 +189,7 @@ class ProductControllerTest {
    @Test
    @DisplayName("Should return 204 when deleting existing product")
    void return204WhenDeleteProduct() throws Exception {
-      Mockito.doNothing().when(deleteCategoryUseCase).execute(1L);
+      Mockito.doNothing().when(deleteProductUseCase).execute(1L);
 
       mockMvc.perform(delete("/products/1"))
               .andExpect(status().isNoContent());
@@ -197,7 +199,7 @@ class ProductControllerTest {
    @DisplayName("Should return 404 when deleting non existing product")
    void return404WhenDeleteProductNotFound() throws Exception {
       Mockito.doThrow(ProductNotFound.byId(1L))
-              .when(deleteCategoryUseCase).execute(1L);
+              .when(deleteProductUseCase).execute(1L);
 
       mockMvc.perform(delete("/products/1"))
               .andExpect(status().isNotFound());
@@ -207,7 +209,7 @@ class ProductControllerTest {
    @DisplayName("Should return 400 when decreasing stock below available")
    void return400WhenInsufficientStock() throws Exception {
       Mockito.when(decreaseStockProductUseCase.execute(Mockito.eq(1L), Mockito.anyInt()))
-              .thenThrow(new InsufficientStockException("error"));
+              .thenThrow(new BusinessException("error"));
 
       mockMvc.perform(patch("/products/1/decrease")
                       .contentType("application/json")
