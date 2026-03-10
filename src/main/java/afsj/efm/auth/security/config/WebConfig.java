@@ -9,6 +9,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,17 +42,20 @@ public class WebConfig {
    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       http
               .csrf(csrf -> csrf.disable())
+              .cors(cors -> {
+              })
               .headers(headers ->
                       headers.frameOptions(frame -> frame.disable()))
               .sessionManagement(session ->
                       session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
               .authorizeHttpRequests((authorize) -> authorize
                       .requestMatchers("/h2-console/**", "/auth/login").permitAll()
-                      .anyRequest().authenticated()
-              )
-              .oauth2ResourceServer(oauth2 ->
-                      oauth2.jwt(jwt ->
-                              jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                      .requestMatchers(HttpMethod.GET).permitAll()
+                      .anyRequest().permitAll()
+              );
+//              .oauth2ResourceServer(oauth2 ->
+//                      oauth2.jwt(jwt ->
+//                              jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
       return http.build();
    }
 
