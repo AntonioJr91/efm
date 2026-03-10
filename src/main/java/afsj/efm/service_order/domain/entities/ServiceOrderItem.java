@@ -13,6 +13,7 @@ import java.util.UUID;
 public class ServiceOrderItem {
 
    @Id
+   @Column(length = 36)
    private UUID id;
 
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
