@@ -32,11 +32,11 @@ public class CreateServiceOrderUseCase {
 
    @Transactional
    public ServiceOrderResponse execute(ServiceOrderRequest request) {
-      var employee = employeeJpaRepository.findByFirstName(request.employeeName())
-              .orElseThrow(() -> EmployeeNotFound.byName(request.employeeName()));
+      var employee = employeeJpaRepository.findById(request.employeeId())
+              .orElseThrow(() -> EmployeeNotFound.byId(request.employeeId()));
 
-      var farmArea = farmAreaJpaRepository.findByName(request.farmAreaName())
-              .orElseThrow(() -> ServiceOrderNotFound.byName(request.farmAreaName()));
+      var farmArea = farmAreaJpaRepository.findById(request.farmAreaId())
+              .orElseThrow(() -> ServiceOrderNotFound.byId(request.farmAreaId()));
 
       var serviceType = new ServiceType(
               request.serviceTypeName(),

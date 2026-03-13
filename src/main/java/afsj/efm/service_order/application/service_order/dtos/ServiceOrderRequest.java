@@ -7,19 +7,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record ServiceOrderRequest(
-        @NotBlank
-        @Size(min = 3, max = 50)
-        String employeeName,
+        @NotNull
+        Long employeeId,
 
-        @NotBlank
-        @Size(min = 3, max = 50)
-        String farmAreaName,
+        @NotNull
+        Long farmAreaId,
 
         @NotBlank
         @Size(min = 3, max = 50)
         String serviceTypeName,
 
-        @NotBlank
         @Size(min = 3, max = 255)
         String serviceTypeDescription,
 

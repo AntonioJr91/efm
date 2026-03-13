@@ -15,7 +15,6 @@ public record ServiceType(
         @Size(min = 3, max = 50)
         String serviceTypeName,
 
-        @NotBlank
         @Size(min = 3, max = 255)
         String serviceTypeDescription,
 
@@ -26,8 +25,6 @@ public record ServiceType(
    public ServiceType {
       if (serviceTypeName == null || serviceTypeName.isBlank())
          throw new InvalidServiceTypeException("SERVICE_TYPE_NAME_REQUIRED");
-      if (serviceTypeDescription == null || serviceTypeDescription.isBlank())
-         throw new InvalidServiceTypeException("SERVICE_TYPE_DESCRIPTION_REQUIRED");
       if (serviceTypeCategory == null)
          throw new InvalidServiceTypeException("SERVICE_CATEGORY_REQUIRED");
    }
