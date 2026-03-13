@@ -22,13 +22,22 @@ public class EmployeeController {
    private final CreateEmployeeUseCase createEmployeeUseCase;
    private final UpdateEmployeeUseCase updateEmployeeUseCase;
    private final DeleteEmployeeUseCase deleteEmployeeUseCase;
+   private final TerminationEmployeeUseCase terminationEmployeeUseCase;
 
-   public EmployeeController(ListEmployeesUseCase listEmployeesUseCase, GetEmployeeByIdUseCase getEmployeeByIdUseCase, CreateEmployeeUseCase createEmployeeUseCase, UpdateEmployeeUseCase updateEmployeeUseCase, DeleteEmployeeUseCase deleteEmployeeUseCase) {
+   public EmployeeController(
+           ListEmployeesUseCase listEmployeesUseCase,
+           GetEmployeeByIdUseCase getEmployeeByIdUseCase,
+           CreateEmployeeUseCase createEmployeeUseCase,
+           UpdateEmployeeUseCase updateEmployeeUseCase,
+           DeleteEmployeeUseCase deleteEmployeeUseCase,
+           TerminationEmployeeUseCase terminationEmployeeUseCase
+   ) {
       this.listEmployeesUseCase = listEmployeesUseCase;
       this.getEmployeeByIdUseCase = getEmployeeByIdUseCase;
       this.createEmployeeUseCase = createEmployeeUseCase;
       this.updateEmployeeUseCase = updateEmployeeUseCase;
       this.deleteEmployeeUseCase = deleteEmployeeUseCase;
+      this.terminationEmployeeUseCase = terminationEmployeeUseCase;
    }
 
    @GetMapping
@@ -60,10 +69,15 @@ public class EmployeeController {
       return ResponseEntity.ok(updateEmployeeUseCase.execute(id, request));
    }
 
-   @DeleteMapping("/{id}")
-   public ResponseEntity<Void> delete(@PathVariable Long id) {
-      deleteEmployeeUseCase.execute(id);
+//   @DeleteMapping("/{id}")
+//   public ResponseEntity<Void> delete(@PathVariable Long id) {
+//      deleteEmployeeUseCase.execute(id);
+//      return ResponseEntity.noContent().build();
+//   }
+
+   @PostMapping("/{id}/terminate")
+   public ResponseEntity<Void> terminate(@PathVariable Long id) {
+      terminationEmployeeUseCase.execute(id);
       return ResponseEntity.noContent().build();
    }
-
 }
