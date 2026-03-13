@@ -19,7 +19,6 @@ public record EmployeeRequest(
 
         @NotNull
         @Size(min = 11, max = 11)
-        @CPF
         String cpf,
 
         @Pattern(regexp = "^$|^[1-9]{2}9\\d{8}$",
