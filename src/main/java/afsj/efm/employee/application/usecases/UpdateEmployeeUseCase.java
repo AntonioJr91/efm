@@ -24,7 +24,7 @@ public class UpdateEmployeeUseCase {
    @Transactional
    public EmployeeUpdateResponse execute(Long id, EmployeeUpdateRequest request) {
       var employee = repository.findById(id)
-              .orElseThrow(() -> EmployeeNotFound.byId(id));
+              .orElseThrow(EmployeeNotFound::byId);
 
       if (request.phoneNumber() == null) return EmployeeMapper.toDtoUpdate(employee);
 
@@ -45,7 +45,7 @@ public class UpdateEmployeeUseCase {
       var newPhoneNumber = new PhoneNumber(newPhoneRaw);
 
       if (repository.existsByPhoneNumber(newPhoneNumber))
-         throw EmployeeConflicts.phoneNumberAlreadyExists(newPhoneNumber);
+         throw EmployeeConflicts.phoneNumberAlreadyExists();
 
       employee.changePhoneNumber(newPhoneNumber);
 

@@ -18,7 +18,7 @@ public class GetCategoryByIdUseCase {
 
    @Transactional(readOnly = true)
    public CategoryResponse execute(Long id) {
-      var category = repository.findById(id).orElseThrow(() -> CategoryNotFound.byId(id));
+      var category = repository.findById(id).orElseThrow(CategoryNotFound::byId);
       return CategoryMapper.toDto(category);
    }
 }

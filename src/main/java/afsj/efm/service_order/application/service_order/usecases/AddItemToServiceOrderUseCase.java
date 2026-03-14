@@ -26,10 +26,10 @@ public class AddItemToServiceOrderUseCase {
    @Transactional
    public ServiceOrderDetailResponse execute(AddItemToServiceOrderRequest request) {
       ServiceOrder serviceOrder = serviceOrderJpaRepository.findById(request.serviceOrderId())
-              .orElseThrow(() -> ServiceOrderNotFound.byId(request.serviceOrderId()));
+              .orElseThrow(ServiceOrderNotFound::byId);
 
       Product product = productJpaRepository.findById(request.productId())
-              .orElseThrow(() -> ProductNotFound.byId(request.productId()));
+              .orElseThrow(ProductNotFound::byId);
 
       product.decreaseStock(request.quantity());
 

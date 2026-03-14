@@ -21,7 +21,7 @@ public class TerminationEmployeeUseCase {
    @Transactional
    public EmployeeResponse execute(Long id) {
       var emp = repository.findById(id)
-              .orElseThrow(() -> EmployeeNotFound.byId(id));
+              .orElseThrow(EmployeeNotFound::byId);
       emp.terminate(LocalDate.now());
       return EmployeeMapper.toDto(emp);
    }

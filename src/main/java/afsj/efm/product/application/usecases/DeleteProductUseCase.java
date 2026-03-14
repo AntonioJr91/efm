@@ -16,7 +16,7 @@ public class DeleteProductUseCase {
 
    @Transactional
    public void execute(Long id) {
-      if (!repository.existsById(id)) throw ProductNotFound.byId(id);
+      if (!repository.existsById(id)) throw ProductNotFound.byId();
       repository.deleteById(id);
    }
 }

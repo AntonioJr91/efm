@@ -16,7 +16,7 @@ public class DeleteFarmAreaUseCase {
 
    @Transactional
    public void execute(Long id) {
-      if (!farmAreaJpaRepository.existsById(id)) throw FarmAreaNotFound.byId(id);
+      if (!farmAreaJpaRepository.existsById(id)) throw FarmAreaNotFound.byId();
       farmAreaJpaRepository.deleteById(id);
    }
 }

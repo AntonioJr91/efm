@@ -17,7 +17,7 @@ public record ServiceOrderRequest(
         @Size(min = 3, max = 50)
         String serviceTypeName,
 
-        @Size(min = 3, max = 255)
+        @Size(max = 255)
         String serviceTypeDescription,
 
         @NotNull

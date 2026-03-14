@@ -32,10 +32,10 @@ public class CreateEmployeeUseCase {
          newPhoneNumber = new PhoneNumber(phoneNumberRequest);
 
       if (repository.existsByCpf(newCpf))
-         throw EmployeeConflicts.cpfAlreadyExists(newCpf);
+         throw EmployeeConflicts.cpfAlreadyExists();
 
       if (newPhoneNumber != null && repository.existsByPhoneNumber(newPhoneNumber))
-         throw EmployeeConflicts.phoneNumberAlreadyExists(newPhoneNumber);
+         throw EmployeeConflicts.phoneNumberAlreadyExists();
 
       Employee newEmployee = new Employee(
               request.firstName(),

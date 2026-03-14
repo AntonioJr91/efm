@@ -11,8 +11,8 @@ public final class ServiceOrderMapper {
    public static ServiceOrderResponse toDto(ServiceOrder serviceOrder) {
       return new ServiceOrderResponse(
               serviceOrder.getId(),
-              serviceOrder.getEmployee().getFirstName(),
-              serviceOrder.getFarmArea().getName(),
+              serviceOrder.getEmployee().getId(),
+              serviceOrder.getFarmArea().getId(),
               serviceOrder.getServiceType().serviceTypeName(),
               serviceOrder.getStatusOrder().name(),
               serviceOrder.getCreatedAt()

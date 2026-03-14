@@ -22,7 +22,7 @@ public class IncreaseServiceOrderItemUseCase {
    @Transactional()
    public ServiceOrderDetailResponse execute(Long orderId, UUID itemId, int quantity) {
       ServiceOrder serviceOrder = repository.findById(orderId)
-              .orElseThrow(() -> ServiceOrderNotFound.byId(orderId));
+              .orElseThrow(ServiceOrderNotFound::byId);
 
       serviceOrder.increaseItemQuantity(itemId, quantity);
       repository.save(serviceOrder);

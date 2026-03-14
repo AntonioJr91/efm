@@ -16,7 +16,7 @@ public class DeleteServiceOrderUseCase {
 
    @Transactional
    public void execute(Long id) {
-      if (!repository.existsById(id)) throw ServiceOrderNotFound.byId(id);
+      if (!repository.existsById(id)) throw ServiceOrderNotFound.byId();
       repository.deleteById(id);
    }
 }

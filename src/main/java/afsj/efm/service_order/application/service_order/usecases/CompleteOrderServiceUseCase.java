@@ -19,7 +19,7 @@ public class CompleteOrderServiceUseCase {
    @Transactional
    public void execute(Long id) {
       var serviceOrder = serviceOrderJpaRepository.findById(id)
-              .orElseThrow(() -> ServiceOrderNotFound.byId(id));
+              .orElseThrow(ServiceOrderNotFound::byId);
 
       serviceOrder.complete(LocalDate.now());
    }

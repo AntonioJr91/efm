@@ -20,7 +20,7 @@ public class CancelOrderServiceUseCase {
    @Transactional
    public void execute(Long id) {
       var serviceOrder = serviceOrderJpaRepository.findById(id)
-              .orElseThrow(() -> ServiceOrderNotFound.byId(id));
+              .orElseThrow(ServiceOrderNotFound::byId);
       var items = serviceOrder.getItems();
 
       items.forEach(

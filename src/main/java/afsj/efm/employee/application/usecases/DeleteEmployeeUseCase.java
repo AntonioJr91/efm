@@ -16,7 +16,7 @@ public class DeleteEmployeeUseCase {
 
    @Transactional
    public void execute(Long id) {
-      if (!repository.existsById(id)) throw EmployeeNotFound.byId(id);
+      if (!repository.existsById(id)) throw EmployeeNotFound.byId();
       repository.deleteById(id);
    }
 }

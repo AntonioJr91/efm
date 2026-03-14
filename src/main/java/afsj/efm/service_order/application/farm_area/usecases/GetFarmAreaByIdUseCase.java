@@ -19,6 +19,6 @@ public class GetFarmAreaByIdUseCase {
    @Transactional(readOnly = true)
    public FarmAreaResponse execute(Long id) {
       return FarmAreaMapper.toDto(farmAreaJpaRepository.findById(id)
-              .orElseThrow(() -> FarmAreaNotFound.byId(id)));
+              .orElseThrow(FarmAreaNotFound::byId));
    }
 }

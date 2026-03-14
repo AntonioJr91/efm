@@ -22,7 +22,7 @@ public class CreateFarmAreaUseCase {
    public FarmAreaResponse execute(FarmAreaRequest request) {
       farmAreaJpaRepository.findByName(request.name())
               .ifPresent(farmArea -> {
-                 throw FarmAreaConflict.farmAreaAlreadyExists(request.name());
+                 throw FarmAreaConflict.farmAreaAlreadyExists();
               });
 
       var newFarmArea = new FarmArea(request.name());

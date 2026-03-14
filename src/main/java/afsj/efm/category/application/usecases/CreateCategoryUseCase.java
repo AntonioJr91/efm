@@ -22,7 +22,7 @@ public class CreateCategoryUseCase {
    public CategoryResponse execute(CategoryRequest request) {
       repository.findByName(request.name())
               .ifPresent(c -> {
-                 throw CategoryConflicts.nameAlreadyExists(request.name());
+                 throw CategoryConflicts.nameAlreadyExists();
               });
 
       var category = new Category(request.name());

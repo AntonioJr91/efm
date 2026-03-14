@@ -18,7 +18,7 @@ public class GetEmployeeByIdUseCase {
    @Transactional(readOnly = true)
    public EmployeeResponse execute(Long id) {
       var employee = repository.findById(id)
-              .orElseThrow(() -> EmployeeNotFound.byId(id));
+              .orElseThrow(EmployeeNotFound::byId);
 
       return EmployeeMapper.toDto(employee);
    }

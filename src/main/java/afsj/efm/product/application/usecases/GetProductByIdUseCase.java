@@ -19,6 +19,6 @@ public class GetProductByIdUseCase {
    @Transactional(readOnly = true)
    public ProductResponse execute(Long id) {
       return ProductMapper.toDto(repository.findById(id)
-              .orElseThrow(() -> ProductNotFound.byId(id)));
+              .orElseThrow(ProductNotFound::byId));
    }
 }

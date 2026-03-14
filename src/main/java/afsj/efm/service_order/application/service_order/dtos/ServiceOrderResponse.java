@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public record ServiceOrderResponse(
         Long id,
-        String employeeName,
-        String farmAreaName,
+        Long employeeId,
+        Long farmAreaId,
         String serviceTypeName,
         String status,
         LocalDate createdAt

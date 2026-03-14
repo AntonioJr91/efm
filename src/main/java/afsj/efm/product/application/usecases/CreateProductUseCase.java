@@ -25,10 +25,10 @@ public class CreateProductUseCase {
    @Transactional
    public ProductResponse execute(ProductRequest request) {
       var category = categoryRepository.findById(request.categoryId())
-              .orElseThrow(() -> CategoryNotFound.byId(request.categoryId()));
+              .orElseThrow(CategoryNotFound::byId);
 
       repository.findByName(request.name()).ifPresent(product -> {
-         throw ProductConflicts.nameAlreadyExists(request.name());
+         throw ProductConflicts.nameAlreadyExists();
       });
 
       Product newProduct = new Product(request.name(), request.stock(), request.unitOfMeasure(), category);

@@ -4,7 +4,7 @@ import afsj.efm.shared.application.exceptions.ConflictException;
 
 public final class FarmAreaConflict {
 
-   public static ConflictException farmAreaAlreadyExists(String name) {
-      return ConflictException.of("Farm Area with name '" + name + "' already exists");
+   public static ConflictException farmAreaAlreadyExists() {
+      return ConflictException.of("Farm Area with name already exists");
    }
 }

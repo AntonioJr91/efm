@@ -20,7 +20,7 @@ public class IncreaseStockProductUseCase {
    @Transactional
    public StockUpdateResponse execute(Long id, int quantity) {
       Product product = repository.findById(id)
-              .orElseThrow(() -> ProductNotFound.byId(id));
+              .orElseThrow(ProductNotFound::byId);
 
       product.increaseStock(quantity);
 

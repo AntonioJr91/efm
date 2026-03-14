@@ -16,7 +16,7 @@ public class DeleteCategoryUseCase {
 
    @Transactional
    public void execute(Long id) {
-      if (!repository.existsById(id)) throw CategoryNotFound.byId(id);
+      if (!repository.existsById(id)) throw CategoryNotFound.byId();
       repository.deleteById(id);
    }
 }

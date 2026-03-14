@@ -2,9 +2,10 @@ package afsj.efm.service_order.application.service_order.usecases;
 
 import afsj.efm.employee.application.errors.EmployeeNotFound;
 import afsj.efm.employee.infrastructure.persistence.EmployeeJpaRepository;
+import afsj.efm.service_order.application.farm_area.errors.FarmAreaNotFound;
 import afsj.efm.service_order.application.service_order.dtos.ServiceOrderRequest;
 import afsj.efm.service_order.application.service_order.dtos.ServiceOrderResponse;
-import afsj.efm.service_order.application.service_order.errors.ServiceOrderNotFound;
+import afsj.efm.service_order.application.service_order.errors.ServiceOrderConflict;
 import afsj.efm.service_order.application.service_order.mappers.ServiceOrderMapper;
 import afsj.efm.service_order.domain.entities.ServiceOrder;
 import afsj.efm.service_order.domain.entities.ServiceType;
@@ -33,10 +34,13 @@ public class CreateServiceOrderUseCase {
    @Transactional
    public ServiceOrderResponse execute(ServiceOrderRequest request) {
       var employee = employeeJpaRepository.findById(request.employeeId())
-              .orElseThrow(() -> EmployeeNotFound.byId(request.employeeId()));
+              .orElseThrow(EmployeeNotFound::byId);
 
       var farmArea = farmAreaJpaRepository.findById(request.farmAreaId())
-              .orElseThrow(() -> ServiceOrderNotFound.byId(request.farmAreaId()));
+              .orElseThrow(FarmAreaNotFound::byId);
+
+      if (repository.existsByServiceTypeServiceTypeName(request.serviceTypeName()))
+         throw ServiceOrderConflict.serviceOrderAlreadyExists();
 
       var serviceType = new ServiceType(
               request.serviceTypeName(),
