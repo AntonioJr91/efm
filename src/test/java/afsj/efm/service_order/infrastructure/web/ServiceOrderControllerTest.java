@@ -137,8 +137,8 @@ class ServiceOrderControllerTest {
    void shouldCreateServiceOrderSuccessfully() throws Exception {
 
       ServiceOrderRequest request = new ServiceOrderRequest(
-              "Client A",
-              "area 51",
+              1L,
+              1L,
               "plantar",
               "descrição",
               ServiceCategory.PLANTING

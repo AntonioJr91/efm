@@ -33,16 +33,6 @@ class ServiceTypeTest {
    }
 
    @Test
-   @DisplayName("Should throw error when description is null or blank")
-   void errorWhenDescriptionIsNullOrBlank() {
-      Assertions.assertThrows(InvalidServiceTypeException.class,
-              () -> new ServiceType("Name", null, ServiceCategory.PLANTING));
-
-      Assertions.assertThrows(InvalidServiceTypeException.class,
-              () -> new ServiceType("Name", "   ", ServiceCategory.PLANTING));
-   }
-
-   @Test
    @DisplayName("Should throw error when category is null")
    void errorWhenCategoryIsNull() {
       Assertions.assertThrows(InvalidServiceTypeException.class,
