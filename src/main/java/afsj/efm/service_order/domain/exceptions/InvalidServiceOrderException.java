@@ -1,6 +1,8 @@
 package afsj.efm.service_order.domain.exceptions;
 
-public class InvalidServiceOrderException extends RuntimeException {
+import afsj.efm.shared.application.exceptions.BusinessException;
+
+public class InvalidServiceOrderException extends BusinessException {
    public InvalidServiceOrderException(String message) {
       super(message);
    }

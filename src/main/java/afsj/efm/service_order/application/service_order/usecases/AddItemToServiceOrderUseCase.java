@@ -18,7 +18,10 @@ public class AddItemToServiceOrderUseCase {
    private final ServiceOrderJpaRepository serviceOrderJpaRepository;
    private final ProductJpaRepository productJpaRepository;
 
-   public AddItemToServiceOrderUseCase(ServiceOrderJpaRepository serviceOrderJpaRepository, ProductJpaRepository productJpaRepository) {
+   public AddItemToServiceOrderUseCase(
+           ServiceOrderJpaRepository serviceOrderJpaRepository,
+           ProductJpaRepository productJpaRepository
+   ) {
       this.serviceOrderJpaRepository = serviceOrderJpaRepository;
       this.productJpaRepository = productJpaRepository;
    }
