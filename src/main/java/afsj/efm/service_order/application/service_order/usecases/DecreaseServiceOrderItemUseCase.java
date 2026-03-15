@@ -25,7 +25,14 @@ public class DecreaseServiceOrderItemUseCase {
               .orElseThrow(ServiceOrderNotFound::byId);
 
       serviceOrder.decreaseItemQuantity(itemId, quantity);
-      repository.save(serviceOrder);
+
+      var item = serviceOrder.getItems().stream()
+              .filter(i -> i.getId().equals(itemId))
+              .findFirst()
+              .orElseThrow(ServiceOrderNotFound::byId);
+
+       var product = item.getProduct();
+       product.increaseStock(quantity);
 
       return ServiceOrderMapper.toDtoDetail(serviceOrder);
    }

@@ -19,6 +19,7 @@ public class ServiceOrderController {
    private final CreateServiceOrderUseCase createServiceOrderUseCase;
    private final DeleteServiceOrderUseCase deleteServiceOrderUseCase;
    private final AddItemToServiceOrderUseCase addItemToServiceOrderUseCase;
+   private final RemoveToServiceOrderItemUseCase removeToServiceOrderItemUseCase;
    private final ListDetailsServiceOrdersUseCase listDetailsServiceOrdersUseCase;
    private final IncreaseServiceOrderItemUseCase increaseServiceOrderItemUseCase;
    private final DecreaseServiceOrderItemUseCase decreaseServiceOrderItemUseCase;
@@ -31,6 +32,7 @@ public class ServiceOrderController {
            CreateServiceOrderUseCase createServiceOrderUseCase,
            DeleteServiceOrderUseCase deleteServiceOrderUseCase,
            AddItemToServiceOrderUseCase addItemToServiceOrderUseCase,
+           RemoveToServiceOrderItemUseCase removeToServiceOrderItemUseCase,
            ListDetailsServiceOrdersUseCase listDetailsServiceOrdersUseCase,
            IncreaseServiceOrderItemUseCase increaseServiceOrderItemUseCase,
            DecreaseServiceOrderItemUseCase decreaseServiceOrderItemUseCase,
@@ -42,6 +44,7 @@ public class ServiceOrderController {
       this.createServiceOrderUseCase = createServiceOrderUseCase;
       this.deleteServiceOrderUseCase = deleteServiceOrderUseCase;
       this.addItemToServiceOrderUseCase = addItemToServiceOrderUseCase;
+      this.removeToServiceOrderItemUseCase = removeToServiceOrderItemUseCase;
       this.listDetailsServiceOrdersUseCase = listDetailsServiceOrdersUseCase;
       this.increaseServiceOrderItemUseCase = increaseServiceOrderItemUseCase;
       this.decreaseServiceOrderItemUseCase = decreaseServiceOrderItemUseCase;
@@ -80,7 +83,13 @@ public class ServiceOrderController {
       return ResponseEntity.ok(addItemToServiceOrderUseCase.execute(request));
    }
 
-   @PatchMapping("/{orderId}/items/{itemId}/increase")
+   @DeleteMapping("/{orderId}/items/{itemId}")
+   public ResponseEntity<Void> removeItem(@PathVariable Long orderId, @PathVariable UUID itemId) {
+      removeToServiceOrderItemUseCase.execute(orderId, itemId);
+      return ResponseEntity.noContent().build();
+   }
+
+   @PatchMapping("/{orderId}/order-item/{itemId}/increase")
    public ResponseEntity<ServiceOrderDetailResponse> increase(
            @PathVariable Long orderId,
            @PathVariable UUID itemId,
@@ -89,7 +98,7 @@ public class ServiceOrderController {
       return ResponseEntity.ok(increaseServiceOrderItemUseCase.execute(orderId, itemId, request.quantity()));
    }
 
-   @PatchMapping("/{orderId}/items/{itemId}/decrease")
+   @PatchMapping("/{orderId}/order-item/{itemId}/decrease")
    public ResponseEntity<ServiceOrderDetailResponse> decrease(
            @PathVariable Long orderId,
            @PathVariable UUID itemId,

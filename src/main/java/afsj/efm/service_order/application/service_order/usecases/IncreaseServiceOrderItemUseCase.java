@@ -1,5 +1,7 @@
 package afsj.efm.service_order.application.service_order.usecases;
 
+import afsj.efm.product.application.errors.ProductNotFound;
+import afsj.efm.product.infrastructure.persistence.ProductJpaRepository;
 import afsj.efm.service_order.application.service_order.dtos.ServiceOrderDetailResponse;
 import afsj.efm.service_order.application.service_order.errors.ServiceOrderNotFound;
 import afsj.efm.service_order.application.service_order.mappers.ServiceOrderMapper;
@@ -14,9 +16,14 @@ import java.util.UUID;
 public class IncreaseServiceOrderItemUseCase {
 
    private final ServiceOrderJpaRepository repository;
+   private final ProductJpaRepository productRepository;
 
-   public IncreaseServiceOrderItemUseCase(ServiceOrderJpaRepository repository) {
+   public IncreaseServiceOrderItemUseCase(
+           ServiceOrderJpaRepository repository,
+           ProductJpaRepository productRepository
+   ) {
       this.repository = repository;
+      this.productRepository = productRepository;
    }
 
    @Transactional()
@@ -25,7 +32,14 @@ public class IncreaseServiceOrderItemUseCase {
               .orElseThrow(ServiceOrderNotFound::byId);
 
       serviceOrder.increaseItemQuantity(itemId, quantity);
-      repository.save(serviceOrder);
+
+      var item = serviceOrder.getItems().stream()
+              .filter(i -> i.getId().equals(itemId))
+              .findFirst()
+              .orElseThrow(ProductNotFound::byId);
+
+      var product = item.getProduct();
+      product.decreaseStock(quantity);
 
       return ServiceOrderMapper.toDtoDetail(serviceOrder);
    }
