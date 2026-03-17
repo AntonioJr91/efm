@@ -6,6 +6,7 @@ import afsj.efm.production.application.usecases.CreateProductionUseCase;
 import afsj.efm.production.application.usecases.GetProductionByIdUseCase;
 import afsj.efm.production.application.usecases.ListProductionsUseCase;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +42,6 @@ public class ProductionController {
 
    @PostMapping
    public ResponseEntity<ProductionResponse> create(@RequestBody @Valid ProductionRequest request) {
-      return ResponseEntity.ok(createProductionUseCase.execute(request));
+      return ResponseEntity.status(HttpStatus.CREATED).body(createProductionUseCase.execute(request));
    }
 }
