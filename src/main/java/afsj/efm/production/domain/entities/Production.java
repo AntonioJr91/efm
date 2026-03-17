@@ -20,7 +20,7 @@ public class Production {
    private Long productId;
 
    @Column(nullable = false, updatable = false)
-   private Long quantity;
+   private int quantity;
 
    @Column(nullable = false, updatable = false)
    private LocalDate createdAt;
@@ -31,7 +31,7 @@ public class Production {
    protected Production() {
    }
 
-   public Production(Long areaId, Long productId, Long quantity, String observation) {
+   public Production(Long areaId, Long productId, int quantity, String observation) {
       validateId(areaId, "area");
       validateId(productId, "product");
       validateQuantity(quantity);
@@ -56,7 +56,7 @@ public class Production {
       return productId;
    }
 
-   public Long getQuantity() {
+   public int getQuantity() {
       return quantity;
    }
 
@@ -73,8 +73,7 @@ public class Production {
       if (property <= 0) throw new InvalidProductionException("%s_MUST_BE_POSITIVE".formatted(name.toUpperCase()));
    }
 
-   private void validateQuantity(Long quantity) {
-      if (quantity == null) throw new InvalidProductionException("QUANTITY_IS_REQUIRED");
+   private void validateQuantity(int quantity) {
       if (quantity <= 0) throw new InvalidProductionException("QUANTITY_MUST_BE_POSITIVE");
    }
 

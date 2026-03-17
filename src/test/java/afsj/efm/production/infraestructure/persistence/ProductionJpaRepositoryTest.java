@@ -19,7 +19,7 @@ class ProductionJpaRepositoryTest {
    @Test
    @DisplayName("Should save production when it is valid")
    void shouldSaveProductionWhenItIsValid() {
-      var production = new Production(1L, 1L, 100L, "observation");
+      var production = new Production(1L, 1L, 100, "observation");
 
       Production saved = repository.save(production);
 
@@ -34,7 +34,7 @@ class ProductionJpaRepositoryTest {
    @Test
    @DisplayName("Should persist production and find it by id")
    void shouldPersistProductionAndFindItById() {
-      var production = new Production(1L, 1L, 100L, "observation");
+      var production = new Production(1L, 1L, 100, "observation");
 
       Production saved = repository.save(production);
       Optional<Production> found = repository.findById(saved.getId());
@@ -51,7 +51,7 @@ class ProductionJpaRepositoryTest {
    @Test
    @DisplayName("Should save production with normalized observation")
    void shouldSaveProductionWithNormalizedObservation() {
-      var production = new Production(1L, 1L, 100L, "   observation   ");
+      var production = new Production(1L, 1L, 100, "   observation   ");
 
       Production saved = repository.save(production);
 

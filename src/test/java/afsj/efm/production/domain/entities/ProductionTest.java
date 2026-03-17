@@ -12,11 +12,11 @@ class ProductionTest {
    @Test
    @DisplayName("Should create production with valid data")
    void shouldCreateProduction() {
-      var production = new Production(1L, 1L, 100L, "observation");
+      var production = new Production(1L, 1L, 100, "observation");
 
       Assertions.assertEquals(1L, production.getAreaId());
       Assertions.assertEquals(1L, production.getProductId());
-      Assertions.assertEquals(100L, production.getQuantity());
+      Assertions.assertEquals(100, production.getQuantity());
       Assertions.assertEquals("observation", production.getObservation());
    }
 
@@ -24,45 +24,42 @@ class ProductionTest {
    @DisplayName("Should throw error when areaId is null, zero or negative")
    void shouldThrowErrorWhenAreaIdIsInvalid() {
       Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(null, 2L, 100L, "observation"));
+              () -> new Production(null, 2L, 100, "observation"));
 
       Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(0L, 2L, 100L, "observation"));
+              () -> new Production(0L, 2L, 100, "observation"));
 
       Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(-1L, 2L, 100L, "observation"));
+              () -> new Production(-1L, 2L, 100, "observation"));
    }
 
    @Test
    @DisplayName("Should throw error when productId is null, zero or negative")
    void shouldThrowErrorWhenProductIdIsInvalid() {
       Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(1L, null, 100L, "observation"));
+              () -> new Production(1L, null, 100, "observation"));
 
       Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(1L, 0L, 100L, "observation"));
+              () -> new Production(1L, 0L, 100, "observation"));
 
       Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(1L, -1L, 100L, "observation"));
+              () -> new Production(1L, -1L, 100, "observation"));
    }
 
    @Test
-   @DisplayName("Should throw error when quantity is null, zero or negative")
+   @DisplayName("Should throw error when quantity zero or negative")
    void shouldThrowErrorWhenQuantityIsInvalid() {
       Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(1L, 2L, null, "observation"));
+              () -> new Production(1L, 2L, 0, "observation"));
 
       Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(1L, 2L, 0L, "observation"));
-
-      Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(1L, 2L, -1L, "observation"));
+              () -> new Production(1L, 2L, -1, "observation"));
    }
 
    @Test
    @DisplayName("Should trim observation")
    void shouldTrimObservation() {
-      var production = new Production(1L, 1L, 100L, "   observation   ");
+      var production = new Production(1L, 1L, 100, "   observation   ");
 
       Assertions.assertEquals("observation", production.getObservation());
    }
@@ -70,7 +67,7 @@ class ProductionTest {
    @Test
    @DisplayName("Should set observation to empty string when null")
    void shouldSetObservationToEmptyStringWhenNull() {
-      var production = new Production(1L, 1L, 100L, null);
+      var production = new Production(1L, 1L, 100, null);
 
       Assertions.assertTrue(production.getObservation().isEmpty());
    }
@@ -78,7 +75,7 @@ class ProductionTest {
    @Test
    @DisplayName("Should set observation to empty string when blank")
    void shouldSetObservationToEmptyStringWhenBlank() {
-      var production = new Production(1L, 1L, 100L, "   ");
+      var production = new Production(1L, 1L, 100, "   ");
 
       Assertions.assertTrue(production.getObservation().isEmpty());
    }
@@ -88,7 +85,7 @@ class ProductionTest {
    void shouldAllowObservationWithMaxLength() {
       String observation = "a".repeat(255);
 
-      var production = new Production(1L, 1L, 100L, observation);
+      var production = new Production(1L, 1L, 100, observation);
 
       Assertions.assertEquals(observation, production.getObservation());
    }
@@ -99,13 +96,13 @@ class ProductionTest {
       String observation = "a".repeat(256);
 
       Assertions.assertThrows(InvalidProductionException.class,
-              () -> new Production(1L, 1L, 100L, observation));
+              () -> new Production(1L, 1L, 100, observation));
    }
 
    @Test
    @DisplayName("Should set createdAt to current date")
    void shouldSetCreatedAtToCurrentDate() {
-      var production = new Production(1L, 1L, 100L, "observation");
+      var production = new Production(1L, 1L, 100, "observation");
 
       Assertions.assertEquals(LocalDate.now(), production.getCreatedAt());
    }

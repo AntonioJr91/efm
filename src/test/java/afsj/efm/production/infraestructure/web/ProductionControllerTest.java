@@ -51,7 +51,7 @@ class ProductionControllerTest {
    @Test
    @DisplayName("Should return 200 when finding production by id")
    void shouldReturn200WhenFindingProductionById() throws Exception {
-      var response = new ProductionResponse(1L, 1L, 1L, 100L, "observation", LocalDate.now());
+      var response = new ProductionResponse(1L, 1L, 1L, 100, "observation", LocalDate.now());
 
       when(getProductionByIdUseCase.execute(1L)).thenReturn(response);
 
@@ -90,7 +90,7 @@ class ProductionControllerTest {
               1L,
               1L,
               1L,
-              100L,
+              100,
               "observation",
               LocalDate.of(2024, 6, 1)
       );
