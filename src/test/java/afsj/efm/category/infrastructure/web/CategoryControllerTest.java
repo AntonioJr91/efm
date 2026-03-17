@@ -56,7 +56,7 @@ class CategoryControllerTest {
    @DisplayName("Should return 404 when not found by id")
    void returnHttpStatus404() throws Exception {
       Mockito.when(getCategoryByIdUseCase.execute(1L))
-              .thenThrow(CategoryNotFound.byId(1L));
+              .thenThrow(CategoryNotFound.byId());
 
       mockMvc.perform(get("/categories/1"))
               .andExpect(status().isNotFound());
@@ -80,7 +80,7 @@ class CategoryControllerTest {
    @DisplayName("Should return 409 when category name already exists")
    void return409WhenDuplicateName() throws Exception {
       Mockito.when(createCategoryUseCase.execute(Mockito.any()))
-              .thenThrow(CategoryConflicts.nameAlreadyExists("semente"));
+              .thenThrow(CategoryConflicts.nameAlreadyExists());
 
       mockMvc.perform(post("/categories")
                       .contentType("application/json")
@@ -113,7 +113,7 @@ class CategoryControllerTest {
    @Test
    @DisplayName("Should return 404 when deleting non-existing category")
    void return404WhenDeleteNotFound() throws Exception {
-      Mockito.doThrow(CategoryNotFound.byId(1L))
+      Mockito.doThrow(CategoryNotFound.byId())
               .when(deleteCategoryUseCase).execute(1L);
 
       mockMvc.perform(delete("/categories/1"))

@@ -58,14 +58,17 @@ class ServiceOrderControllerTest {
    @MockitoBean
    private CancelOrderServiceUseCase cancelOrderServiceUseCase;
 
+   @MockitoBean
+   private RemoveToServiceOrderItemUseCase removeToServiceOrderItemUseCase;
+
    @Test
    @DisplayName("Should return all service orders with HTTP 200")
    void shouldReturnAllServiceOrdersWhenListing() throws Exception {
 
       ServiceOrderResponse response = new ServiceOrderResponse(
               1L,
-              "Xibatinha",
-              "area 51",
+              1L,
+              1L,
               "plantar",
               StatusOrder.IN_PROGRESS.name(),
               LocalDate.now()
@@ -115,8 +118,8 @@ class ServiceOrderControllerTest {
 
       ServiceOrderResponse response = new ServiceOrderResponse(
               1L,
-              "Xibatinha",
-              "area 51",
+              1L,
+              1L,
               "plantar",
               StatusOrder.IN_PROGRESS.name(),
               LocalDate.now()
@@ -145,8 +148,8 @@ class ServiceOrderControllerTest {
       );
       ServiceOrderResponse response = new ServiceOrderResponse(
               1L,
-              "Xibatinha",
-              "area 51",
+              1L,
+              1L,
               "plantar",
               StatusOrder.IN_PROGRESS.name(),
               LocalDate.now()
@@ -245,7 +248,7 @@ class ServiceOrderControllerTest {
       Mockito.when(increaseServiceOrderItemUseCase.execute(eq(1L), eq(itemId), eq(2)))
               .thenReturn(response);
 
-      mockMvc.perform(patch("/serviceorder/1/items/" + itemId + "/increase")
+      mockMvc.perform(patch("/serviceorder/1/order-item/" + itemId + "/increase")
                       .contentType(MediaType.APPLICATION_JSON)
                       .content(objectMapper.writeValueAsString(request)))
               .andExpect(status().isOk());
@@ -280,7 +283,7 @@ class ServiceOrderControllerTest {
       Mockito.when(decreaseServiceOrderItemUseCase.execute(eq(1L), eq(itemId), eq(1)))
               .thenReturn(response);
 
-      mockMvc.perform(patch("/serviceorder/1/items/" + itemId + "/decrease")
+      mockMvc.perform(patch("/serviceorder/1/order-item/" + itemId + "/decrease")
                       .contentType(MediaType.APPLICATION_JSON)
                       .content(objectMapper.writeValueAsString(request)))
               .andExpect(status().isOk());

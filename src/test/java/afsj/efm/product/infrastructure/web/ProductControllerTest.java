@@ -70,7 +70,7 @@ class ProductControllerTest {
    @DisplayName("Should return 404 when product is not found by id")
    void return404WhenProductNotFound() throws Exception {
       Mockito.when(getProductByIdUseCase.execute(1L))
-              .thenThrow(ProductNotFound.byId(1L));
+              .thenThrow(ProductNotFound.byId());
 
       mockMvc.perform(get("/products/1"))
               .andExpect(status().isNotFound());
@@ -106,7 +106,7 @@ class ProductControllerTest {
    @DisplayName("Should return 409 when product name already exists")
    void return409WhenDuplicateName() throws Exception {
       Mockito.when(createProductUseCase.execute(Mockito.any()))
-              .thenThrow(ProductConflicts.nameAlreadyExists("milho"));
+              .thenThrow(ProductConflicts.nameAlreadyExists());
 
       mockMvc.perform(post("/products")
                       .contentType("application/json")
@@ -198,7 +198,7 @@ class ProductControllerTest {
    @Test
    @DisplayName("Should return 404 when deleting non existing product")
    void return404WhenDeleteProductNotFound() throws Exception {
-      Mockito.doThrow(ProductNotFound.byId(1L))
+      Mockito.doThrow(ProductNotFound.byId())
               .when(deleteProductUseCase).execute(1L);
 
       mockMvc.perform(delete("/products/1"))
