@@ -69,8 +69,8 @@ public class Production {
    }
 
    private void validateId(Long property, String name) {
-      if (property == null) throw new InvalidProductionException("%s_IS_REQUIRED");
-      if (property <= 0) throw new InvalidProductionException("%s_MUST_BE_POSITIVE");
+      if (property == null) throw new InvalidProductionException("%s_IS_REQUIRED".formatted(name.toUpperCase()));
+      if (property <= 0) throw new InvalidProductionException("%s_MUST_BE_POSITIVE".formatted(name.toUpperCase()));
    }
 
    private void validateQuantity(Long quantity) {
