@@ -31,10 +31,10 @@ public class CreateProductUseCase {
          throw ProductConflicts.nameAlreadyExists();
       });
 
-      Product newProduct = new Product(request.name(), request.stock(), request.unitOfMeasure(), category);
+      Product newProduct = ProductMapper.toEntity(request, category);
+      System.out.println(newProduct);
 
       Product saved = repository.save(newProduct);
-
       return ProductMapper.toDto(saved);
    }
 }

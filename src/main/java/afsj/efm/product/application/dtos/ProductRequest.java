@@ -1,5 +1,6 @@
 package afsj.efm.product.application.dtos;
 
+import afsj.efm.product.domain.enums.ProductOrigin;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +18,9 @@ public record ProductRequest(
 
         @NotNull
         UnitOfMeasure unitOfMeasure,
+
+        @NotNull
+        ProductOrigin productOrigin,
 
         @NotNull
         Long categoryId

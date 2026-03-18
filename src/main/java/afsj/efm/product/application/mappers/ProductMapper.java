@@ -15,6 +15,7 @@ public final class ProductMapper {
               product.getName(),
               product.getAvailableStock(),
               product.getUnitOfMeasure(),
+              product.getProductOrigin(),
               product.getCreatedAt(),
               product.getCategory().getId()
       );
@@ -29,6 +30,7 @@ public final class ProductMapper {
               request.name(),
               request.stock(),
               request.unitOfMeasure(),
+              request.productOrigin(),
               category
       );
    }
