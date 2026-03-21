@@ -13,7 +13,8 @@ public final class ProductMapper {
       return new ProductResponse(
               product.getId(),
               product.getName(),
-              product.getAvailableStock(),
+              product.getStock(),
+              product.getMinimumStock(),
               product.getUnitOfMeasure(),
               product.getProductOrigin(),
               product.getCreatedAt(),
@@ -29,6 +30,7 @@ public final class ProductMapper {
       return new Product(
               request.name(),
               request.stock(),
+              request.minimumStock(),
               request.unitOfMeasure(),
               request.productOrigin(),
               category

@@ -5,6 +5,6 @@ import afsj.efm.product.domain.entities.Product;
 
 public final class StockMapper {
    public static StockUpdateResponse toResponse(Product product) {
-      return new StockUpdateResponse(product.getId(), product.getName(), product.getAvailableStock());
+      return new StockUpdateResponse(product.getId(), product.getName(), product.getStock());
    }
 }

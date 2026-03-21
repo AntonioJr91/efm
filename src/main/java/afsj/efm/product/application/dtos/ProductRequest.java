@@ -13,8 +13,12 @@ public record ProductRequest(
         String name,
 
         @NotNull
-        @Min(1)
+        @Min(0)
         Integer stock,
+
+        @NotNull
+        @Min(1)
+        Integer minimumStock,
 
         @NotNull
         UnitOfMeasure unitOfMeasure,

@@ -30,23 +30,24 @@ public class StockMovement {
    protected StockMovement() {
    }
 
-   private StockMovement(MovementType movementType, int quantity, Product product) {
-      validate(movementType, quantity);
-      this.movementType = movementType;
-      this.quantity = quantity;
-      this.createdAt = LocalDateTime.now();
+   private StockMovement(Product product, int quantity, MovementType movementType) {
+      validate(product, quantity, movementType);
       this.product = product;
+      this.quantity = quantity;
+      this.movementType = movementType;
+      this.createdAt = LocalDateTime.now();
    }
 
-   public static StockMovement in(int quantity, Product product) {
-      return new StockMovement(MovementType.IN, quantity, product);
+   public static StockMovement in(Product product, int quantity) {
+      return new StockMovement(product, quantity, MovementType.IN);
    }
 
-   public static StockMovement out(int quantity, Product product) {
-      return new StockMovement(MovementType.OUT, quantity, product);
+   public static StockMovement out(Product product, int quantity) {
+      return new StockMovement(product, quantity, MovementType.OUT);
    }
 
-   private static void validate(MovementType type, int value) {
+   private static void validate(Product product, int value, MovementType type) {
+      if (product == null) throw new InvalidProductException("PRODUCT_REQUIRED");
       if (type == null) throw new InvalidProductException("MOVEMENT_TYPE_REQUIRED");
       if (value <= 0) throw new InvalidProductException("QUANTITY_MUST_BE_GREATER_THAN_ZERO");
    }

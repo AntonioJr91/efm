@@ -2,6 +2,7 @@ package afsj.efm.product.domain.entities;
 
 import afsj.efm.category.domain.entities.Category;
 import afsj.efm.product.domain.enums.ProductOrigin;
+import afsj.efm.product.domain.enums.StockStatus;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import afsj.efm.product.domain.exceptions.InvalidProductException;
 import jakarta.persistence.*;
@@ -24,6 +25,9 @@ public class Product {
    @Column(nullable = false)
    private int stock;
 
+   @Column(nullable = false)
+   private int minimumStock;
+
    @Enumerated(EnumType.STRING)
    @Column(nullable = false, updatable = false)
    private UnitOfMeasure unitOfMeasure;
@@ -35,7 +39,7 @@ public class Product {
    @Column(nullable = false, updatable = false)
    private LocalDate createdAt;
 
-   @OneToMany(mappedBy = "product")
+   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
    private List<StockMovement> stockMovements = new ArrayList<>();
 
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -48,18 +52,21 @@ public class Product {
    public Product(
            String name,
            int stock,
+           int minimumStock,
            UnitOfMeasure unitOfMeasure,
            ProductOrigin productOrigin,
            Category category
    ) {
       validateName(name);
       validateInitialStock(stock);
+      validateMinimumStock(minimumStock);
       validateUnitOfMeasure(unitOfMeasure);
       validateProductOrigin(productOrigin);
       validateCategory(category);
 
       this.name = name;
       this.stock = stock;
+      this.minimumStock = minimumStock;
       this.unitOfMeasure = unitOfMeasure;
       this.productOrigin = productOrigin;
       this.createdAt = LocalDate.now();
@@ -78,8 +85,12 @@ public class Product {
       return createdAt;
    }
 
-   public int getAvailableStock() {
+   public int getStock() {
       return stock;
+   }
+
+   public int getMinimumStock() {
+      return minimumStock;
    }
 
    public UnitOfMeasure getUnitOfMeasure() {
@@ -102,7 +113,7 @@ public class Product {
       validateMovementQuantity(quantity);
 
       this.stock += quantity;
-      this.stockMovements.add(StockMovement.in(quantity, this));
+      this.stockMovements.add(StockMovement.in(this, quantity));
    }
 
    public void decreaseStock(int quantity) {
@@ -110,7 +121,7 @@ public class Product {
       validateSufficientStock(quantity);
 
       this.stock -= quantity;
-      this.stockMovements.add(StockMovement.out(quantity, this));
+      this.stockMovements.add(StockMovement.out(this, quantity));
    }
 
    private void validateName(String name) {
@@ -141,5 +152,15 @@ public class Product {
 
    private void validateCategory(Category category) {
       if (category == null) throw new InvalidProductException("CATEGORY_IS_REQUIRED");
+   }
+
+   private void validateMinimumStock(int minimumStock) {
+      if (minimumStock < 1) throw new InvalidProductException("MINIMUM_STOCK_MUST_BE_GREATER_THAN_ZERO");
+   }
+
+   public StockStatus getStockStatus() {
+      if (stock == 0) return StockStatus.OUT_OF_STOCK;
+      if (stock <= minimumStock) return StockStatus.LOW_STOCK;
+      return StockStatus.IN_STOCK;
    }
 }
