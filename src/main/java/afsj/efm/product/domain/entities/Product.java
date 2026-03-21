@@ -3,7 +3,7 @@ package afsj.efm.product.domain.entities;
 import afsj.efm.category.domain.entities.Category;
 import afsj.efm.product.domain.enums.ProductOrigin;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
-import afsj.efm.production.domain.exceptions.InvalidProductionException;
+import afsj.efm.product.domain.exceptions.InvalidProductException;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -114,32 +114,32 @@ public class Product {
    }
 
    private void validateName(String name) {
-      if (name == null || name.isBlank()) throw new InvalidProductionException("PRODUCT_NAME_REQUIRED");
-      if (name.length() < 3) throw new InvalidProductionException("PRODUCT_NAME_TOO_SHORT");
-      if (name.length() > 50) throw new InvalidProductionException("PRODUCT_NAME_TOO_LONG");
+      if (name == null || name.isBlank()) throw new InvalidProductException("PRODUCT_NAME_REQUIRED");
+      if (name.length() < 3) throw new InvalidProductException("PRODUCT_NAME_TOO_SHORT");
+      if (name.length() > 50) throw new InvalidProductException("PRODUCT_NAME_TOO_LONG");
    }
 
    private void validateInitialStock(int quantity) {
-      if (quantity < 0) throw new InvalidProductionException("INITIAL_STOCK_CANNOT_BE_NEGATIVE");
+      if (quantity < 0) throw new InvalidProductException("INITIAL_STOCK_CANNOT_BE_NEGATIVE");
    }
 
    private void validateMovementQuantity(int quantity) {
-      if (quantity <= 0) throw new InvalidProductionException("MOVEMENT_QUANTITY_MUST_BE_GREATER_THAN_ZERO");
+      if (quantity <= 0) throw new InvalidProductException("MOVEMENT_QUANTITY_MUST_BE_GREATER_THAN_ZERO");
    }
 
    private void validateSufficientStock(int quantity) {
-      if (quantity > stock) throw new InvalidProductionException("INSUFFICIENT_STOCK_AVAILABLE");
+      if (quantity > stock) throw new InvalidProductException("INSUFFICIENT_STOCK_AVAILABLE");
    }
 
    private void validateUnitOfMeasure(UnitOfMeasure unitOfMeasure) {
-      if (unitOfMeasure == null) throw new InvalidProductionException("UNIT_OF_MEASURE_REQUIRED");
+      if (unitOfMeasure == null) throw new InvalidProductException("UNIT_OF_MEASURE_REQUIRED");
    }
 
    private void validateProductOrigin(ProductOrigin productOrigin) {
-      if (productOrigin == null) throw new InvalidProductionException("PRODUCT_ORIGIN_REQUIRED");
+      if (productOrigin == null) throw new InvalidProductException("PRODUCT_ORIGIN_REQUIRED");
    }
 
    private void validateCategory(Category category) {
-      if (category == null) throw new InvalidProductionException("CATEGORY_IS_REQUIRED");
+      if (category == null) throw new InvalidProductException("CATEGORY_IS_REQUIRED");
    }
 }

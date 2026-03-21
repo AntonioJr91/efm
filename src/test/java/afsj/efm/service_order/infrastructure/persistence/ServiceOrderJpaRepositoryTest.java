@@ -7,6 +7,7 @@ import afsj.efm.employee.domain.entities.PhoneNumber;
 import afsj.efm.employee.domain.enums.ContractType;
 import afsj.efm.employee.domain.enums.JobRole;
 import afsj.efm.product.domain.entities.Product;
+import afsj.efm.product.domain.enums.ProductOrigin;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import afsj.efm.service_order.domain.entities.FarmArea;
 import afsj.efm.service_order.domain.entities.ServiceOrder;
@@ -131,6 +132,7 @@ class ServiceOrderJpaRepositoryTest {
                       "Produto Teste",
                       10,
                       UnitOfMeasure.UNIT,
+                      ProductOrigin.OWN_PRODUCTION,
                       entityManager.persist(new Category("Categoria Teste"))
               )
       );

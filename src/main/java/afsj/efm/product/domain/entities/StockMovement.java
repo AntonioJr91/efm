@@ -1,6 +1,7 @@
 package afsj.efm.product.domain.entities;
 
 import afsj.efm.product.domain.enums.MovementType;
+import afsj.efm.product.domain.exceptions.InvalidStockMovementException;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -46,8 +47,8 @@ public class StockMovement {
    }
 
    private static void validate(MovementType type, int value) {
-      if (type == null) throw new IllegalArgumentException("MOVEMENT_TYPE_REQUIRED");
-      if (value <= 0) throw new IllegalArgumentException("QUANTITY_MUST_BE_GREATER_THAN_ZERO");
+      if (type == null) throw new InvalidStockMovementException("MOVEMENT_TYPE_REQUIRED");
+      if (value <= 0) throw new InvalidStockMovementException("QUANTITY_MUST_BE_GREATER_THAN_ZERO");
    }
 
    public MovementType getMovementType() {

@@ -3,6 +3,7 @@ package afsj.efm.product.infrastructure.persistence;
 import afsj.efm.category.domain.entities.Category;
 import afsj.efm.category.infrastructure.persistence.CategoryJpaRepository;
 import afsj.efm.product.domain.entities.Product;
+import afsj.efm.product.domain.enums.ProductOrigin;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ class ProductJpaRepositoryTest {
    @BeforeEach
    void setUp() {
       category = categoryJpaRepository.save(new Category("other"));
-      product = new Product("semente", 10, UnitOfMeasure.UNIT, category);
+      product = new Product("semente", 10, UnitOfMeasure.UNIT, ProductOrigin.OWN_PRODUCTION, category);
    }
 
    @Test
@@ -63,7 +64,7 @@ class ProductJpaRepositoryTest {
    @Test
    @DisplayName("Should throw error when product name is duplicated")
    void notAllowDuplicate() {
-      var product2 = new Product("semente", 20, UnitOfMeasure.UNIT, category);
+      var product2 = new Product("semente", 20, UnitOfMeasure.UNIT, ProductOrigin.OWN_PRODUCTION, category);
 
       repository.saveAndFlush(product);
 

@@ -1,15 +1,14 @@
 package afsj.efm.product.application.service;
 
-import afsj.efm.category.application.usecases.DeleteCategoryUseCase;
 import afsj.efm.category.domain.entities.Category;
 import afsj.efm.category.infrastructure.persistence.CategoryJpaRepository;
 import afsj.efm.product.application.dtos.ProductRequest;
 import afsj.efm.product.application.dtos.ProductResponse;
 import afsj.efm.product.application.usecases.*;
 import afsj.efm.product.domain.entities.Product;
+import afsj.efm.product.domain.enums.ProductOrigin;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
-import afsj.efm.product.domain.exceptions.InsufficientStockException;
-import afsj.efm.product.domain.exceptions.InvalidMovementQuantityException;
+import afsj.efm.product.domain.exceptions.InvalidProductException;
 import afsj.efm.product.infrastructure.persistence.ProductJpaRepository;
 import afsj.efm.shared.application.exceptions.ConflictException;
 import afsj.efm.shared.application.exceptions.ResourceNotFoundException;
@@ -56,7 +55,7 @@ class ProductApplicationServiceTest {
 
    @BeforeEach
    void setUp() {
-      milho = new Product("milho", 15, UnitOfMeasure.UNIT, category);
+      milho = new Product("milho", 15, UnitOfMeasure.UNIT, ProductOrigin.OWN_PRODUCTION, category);
    }
 
    @Test
@@ -108,7 +107,7 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should save product when name does not exist")
    void saveProduct() {
-      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), 1L);
+      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), milho.getProductOrigin(), 1L);
 
       when(repository.findByName(milho.getName()))
               .thenReturn(Optional.empty());
@@ -128,10 +127,10 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should throw conflict when product name already exists")
    void nameConflict() {
-      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), 1L);
+      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), milho.getProductOrigin(), 1L);
 
       when(repository.findByName(milho.getName()))
-              .thenReturn(Optional.of(new Product(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), category)));
+              .thenReturn(Optional.of(new Product(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), milho.getProductOrigin(), category)));
 
       when(categoryJpaRepository.findById(anyLong()))
               .thenReturn(Optional.of(category));
@@ -179,7 +178,7 @@ class ProductApplicationServiceTest {
    void increaseWithInvalidQuantity() {
       when(repository.findById(anyLong()))
               .thenReturn(Optional.of(milho));
-      assertThrows(InvalidMovementQuantityException.class,
+      assertThrows(InvalidProductException.class,
               () -> increaseStockProductUseCase.execute(1L, 0));
       verify(repository, never()).save(any());
    }
@@ -213,7 +212,7 @@ class ProductApplicationServiceTest {
       when(repository.findById(anyLong()))
               .thenReturn(Optional.of(milho));
 
-      assertThrows(InsufficientStockException.class,
+      assertThrows(InvalidProductException.class,
               () -> decreaseStockProductUseCase.execute(1L, 100));
       verify(repository, never()).save(any());
    }

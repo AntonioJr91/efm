@@ -7,6 +7,7 @@ import afsj.efm.employee.domain.entities.PhoneNumber;
 import afsj.efm.employee.domain.enums.ContractType;
 import afsj.efm.employee.domain.enums.JobRole;
 import afsj.efm.product.domain.entities.Product;
+import afsj.efm.product.domain.enums.ProductOrigin;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import afsj.efm.service_order.domain.enums.ServiceCategory;
 import afsj.efm.service_order.domain.exceptions.InvalidServiceOrderItemException;
@@ -49,6 +50,7 @@ class ServiceOrderItemTest {
               "test",
               10,
               UnitOfMeasure.UNIT,
+              ProductOrigin.OWN_PRODUCTION,
               category
       );
 
