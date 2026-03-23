@@ -59,9 +59,9 @@ public class Product {
    ) {
       validateName(name);
       validateInitialStock(stock);
-      validateMinimumStock(minimumStock);
       validateUnitOfMeasure(unitOfMeasure);
       validateProductOrigin(productOrigin);
+      validateMinimumStock(minimumStock, productOrigin);
       validateCategory(category);
 
       this.name = name;
@@ -154,8 +154,11 @@ public class Product {
       if (category == null) throw new InvalidProductException("CATEGORY_IS_REQUIRED");
    }
 
-   private void validateMinimumStock(int minimumStock) {
-      if (minimumStock < 1) throw new InvalidProductException("MINIMUM_STOCK_MUST_BE_GREATER_THAN_ZERO");
+   private void validateMinimumStock(int minimumStock, ProductOrigin productOrigin) {
+      if (minimumStock < 0) throw new InvalidProductException("MINIMUM_STOCK_CANNOT_BE_NEGATIVE");
+      if (productOrigin == ProductOrigin.PURCHASED && minimumStock < 1) {
+         throw new InvalidProductException("MINIMUM_STOCK_MUST_BE_GREATER_THAN_ZERO");
+      }
    }
 
    public StockStatus getStockStatus() {

@@ -17,7 +17,7 @@ public record ProductRequest(
         Integer stock,
 
         @NotNull
-        @Min(1)
+        @Min(0)
         Integer minimumStock,
 
         @NotNull

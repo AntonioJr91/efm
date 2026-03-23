@@ -32,6 +32,7 @@ import static org.mockito.Mockito.*;
 class ProductApplicationServiceTest {
 
    Product milho;
+   int minimumStock = 0;
    Category category = new Category("other");
 
    @Mock
@@ -55,7 +56,7 @@ class ProductApplicationServiceTest {
 
    @BeforeEach
    void setUp() {
-      milho = new Product("milho", 15, UnitOfMeasure.UNIT, ProductOrigin.OWN_PRODUCTION, category);
+      milho = new Product("milho", 15, minimumStock, UnitOfMeasure.UNIT, ProductOrigin.OWN_PRODUCTION, category);
    }
 
    @Test
@@ -107,7 +108,14 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should save product when name does not exist")
    void saveProduct() {
-      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), milho.getProductOrigin(), 1L);
+      var request = new ProductRequest(
+              milho.getName(),
+              milho.getStock(),
+              milho.getMinimumStock(),
+              milho.getUnitOfMeasure(),
+              milho.getProductOrigin(),
+              1L
+      );
 
       when(repository.findByName(milho.getName()))
               .thenReturn(Optional.empty());
@@ -127,10 +135,24 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should throw conflict when product name already exists")
    void nameConflict() {
-      var request = new ProductRequest(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), milho.getProductOrigin(), 1L);
+      var request = new ProductRequest(
+              milho.getName(),
+              milho.getStock(),
+              milho.getMinimumStock(),
+              milho.getUnitOfMeasure(),
+              milho.getProductOrigin(),
+              1L
+      );
 
       when(repository.findByName(milho.getName()))
-              .thenReturn(Optional.of(new Product(milho.getName(), milho.getAvailableStock(), milho.getUnitOfMeasure(), milho.getProductOrigin(), category)));
+              .thenReturn(Optional.of(new Product(
+                      milho.getName(),
+                      milho.getStock(),
+                      milho.getMinimumStock(),
+                      milho.getUnitOfMeasure(),
+                      milho.getProductOrigin(),
+                      category
+              )));
 
       when(categoryJpaRepository.findById(anyLong()))
               .thenReturn(Optional.of(category));
@@ -162,7 +184,7 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should increase product stock when valid quantity is provided ")
    void increaseStock() {
-      int initialStock = milho.getAvailableStock();
+      int initialStock = milho.getStock();
 
       when(repository.findById(anyLong()))
               .thenReturn(Optional.of(milho));
@@ -195,7 +217,7 @@ class ProductApplicationServiceTest {
    @Test
    @DisplayName("Should decrease product stock when valid quantity is provided ")
    void decreaseStock() {
-      int initialStock = milho.getAvailableStock();
+      int initialStock = milho.getStock();
 
       when(repository.findById(anyLong()))
               .thenReturn(Optional.of(milho));

@@ -131,6 +131,7 @@ class ServiceOrderJpaRepositoryTest {
               new Product(
                       "Produto Teste",
                       10,
+                      0,
                       UnitOfMeasure.UNIT,
                       ProductOrigin.OWN_PRODUCTION,
                       entityManager.persist(new Category("Categoria Teste"))

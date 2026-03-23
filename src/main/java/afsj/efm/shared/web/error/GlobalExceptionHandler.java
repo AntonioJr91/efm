@@ -8,6 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -125,6 +129,42 @@ public class GlobalExceptionHandler {
       );
 
       return ResponseEntity.badRequest().body(error);
+   }
+
+   @ExceptionHandler(AuthenticationException.class)
+   public ResponseEntity<StandardError> handleAuthenticationException(
+           AuthenticationException ex,
+           HttpServletRequest request
+   ) {
+      StandardError error = new StandardError(
+              Instant.now(),
+              HttpStatus.UNAUTHORIZED.value(),
+              HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+              "Authentication failed",
+              request.getRequestURI()
+      );
+
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+   }
+
+   @ExceptionHandler({
+           BadCredentialsException.class,
+           InternalAuthenticationServiceException.class,
+           UsernameNotFoundException.class
+   })
+   public ResponseEntity<StandardError> handleAuthentication(
+           Exception ex,
+           HttpServletRequest request
+   ) {
+      StandardError error = new StandardError(
+              Instant.now(),
+              HttpStatus.UNAUTHORIZED.value(),
+              HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+              "User or password incorrect",
+              request.getRequestURI()
+      );
+
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
    }
 
    @ExceptionHandler(Exception.class)

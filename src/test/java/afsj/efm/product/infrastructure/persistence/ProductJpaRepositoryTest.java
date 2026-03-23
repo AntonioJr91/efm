@@ -28,7 +28,7 @@ class ProductJpaRepositoryTest {
    @BeforeEach
    void setUp() {
       category = categoryJpaRepository.save(new Category("other"));
-      product = new Product("semente", 10, UnitOfMeasure.UNIT, ProductOrigin.OWN_PRODUCTION, category);
+      product = new Product("semente", 10, 0, UnitOfMeasure.UNIT, ProductOrigin.OWN_PRODUCTION, category);
    }
 
    @Test
@@ -64,7 +64,7 @@ class ProductJpaRepositoryTest {
    @Test
    @DisplayName("Should throw error when product name is duplicated")
    void notAllowDuplicate() {
-      var product2 = new Product("semente", 20, UnitOfMeasure.UNIT, ProductOrigin.OWN_PRODUCTION, category);
+      var product2 = new Product("semente", 20, 0, UnitOfMeasure.UNIT, ProductOrigin.OWN_PRODUCTION, category);
 
       repository.saveAndFlush(product);
 

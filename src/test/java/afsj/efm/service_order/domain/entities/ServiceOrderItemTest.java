@@ -49,6 +49,7 @@ class ServiceOrderItemTest {
       product = new Product(
               "test",
               10,
+              0,
               UnitOfMeasure.UNIT,
               ProductOrigin.OWN_PRODUCTION,
               category

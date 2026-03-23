@@ -6,6 +6,7 @@ import afsj.efm.product.application.errors.ProductConflicts;
 import afsj.efm.product.application.errors.ProductNotFound;
 import afsj.efm.product.application.usecases.*;
 import afsj.efm.product.domain.enums.ProductOrigin;
+import afsj.efm.product.domain.enums.StockStatus;
 import afsj.efm.product.domain.enums.UnitOfMeasure;
 import afsj.efm.shared.application.exceptions.BusinessException;
 import org.junit.jupiter.api.DisplayName;
@@ -57,6 +58,8 @@ class ProductControllerTest {
                       1L,
                       "milho",
                       10,
+                      0,
+                      StockStatus.IN_STOCK,
                       UnitOfMeasure.UNIT,
                       ProductOrigin.OWN_PRODUCTION,
                       LocalDate.now(),
@@ -85,6 +88,8 @@ class ProductControllerTest {
                       1L,
                       "milho",
                       10,
+                      0,
+                      StockStatus.IN_STOCK,
                       UnitOfMeasure.UNIT,
                       ProductOrigin.OWN_PRODUCTION,
                       LocalDate.now(),
@@ -97,6 +102,7 @@ class ProductControllerTest {
                                   {
                                     "name": "milho",
                                     "stock": 10,
+                                    "minimumStock": 0,
                                     "unitOfMeasure": "UNIT",
                                     "productOrigin": "OWN_PRODUCTION",
                                        "categoryId": 1
@@ -117,6 +123,7 @@ class ProductControllerTest {
                                   {
                                     "name": "milho",
                                     "stock": 10,
+                                    "minimumStock": 0,
                                     "unitOfMeasure": "UNIT",
                                     "productOrigin": "OWN_PRODUCTION",
                                     "categoryId": 1
