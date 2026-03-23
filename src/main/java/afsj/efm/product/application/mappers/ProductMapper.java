@@ -15,6 +15,7 @@ public final class ProductMapper {
               product.getName(),
               product.getStock(),
               product.getMinimumStock(),
+              product.getStockStatus(),
               product.getUnitOfMeasure(),
               product.getProductOrigin(),
               product.getCreatedAt(),
