@@ -1,108 +1,213 @@
 # EFM API
 
-REST API built with Spring Boot as a study project focused on hands-on practice and skill development in Java backend engineering.
+API REST desenvolvida com Spring Boot para estudo de modelagem de domínio, organização em camadas, autenticação JWT e persistência com JPA.
 
-This repository is intended to reinforce knowledge in domain modeling, layered architecture, JPA persistence, JWT authentication, validation, and automated testing.
+O projeto simula rotinas de gestão rural, com foco em produtos, estoque, funcionários, áreas da fazenda, ordens de serviço, produção e identidade de usuários.
 
-## Highlights
-
-- modular architecture organized by domain context
-- pragmatic use of Clean Architecture and DDD concepts
-- JWT-based authentication
-- product and inventory management
-- service orders with items and status flow
-- local seed data for development
-- test suite covering different layers of the application
-
-## Stack
+## Visão Geral
 
 - Java 21
-- Spring Boot 3
+- Spring Boot 3.5.9
 - Spring Web
 - Spring Data JPA
 - Spring Security
-- JWT
-- H2
-- MySQL Driver
+- OAuth2 Resource Server + JWT com chaves RSA
+- Bean Validation
 - Maven
+- H2 para execução local padrão
+- MySQL 8 para execução com Docker Compose
 
-## Features
+## Contextos do Domínio
 
-- authentication with login and logout
-- categories
-- products and inventory control
-- employees
-- users and roles
-- farm areas
-- service orders and items
-- production records
-- enum helper endpoints
+O código está organizado por contexto funcional, com separação entre camadas de `application`, `domain`, `infrastructure` e `shared`.
 
-## Architecture
+Principais módulos:
 
-The project is organized with inspiration from Clean Architecture and DDD, without following either model rigidly.
+- `auth`
+- `category`
+- `employee`
+- `identity`
+- `product`
+- `production`
+- `service_order`
+- `shared`
 
-The goal was to apply the concepts that made sense for the current scope of the project in a pragmatic way. The structure aims to separate responsibilities and protect business rules without forcing strict academic adherence to those patterns.
+## Funcionalidades
 
-The codebase is organized by domain context, with separation between `application`, `domain`, `infrastructure`, and `shared`.
+- autenticação com login e revogação de token no logout
+- gestão de categorias
+- cadastro de produtos e controle de estoque
+- cadastro e desligamento de funcionários
+- gestão de usuários e papéis
+- cadastro de áreas da fazenda
+- ordens de serviço com itens, incremento/decremento de quantidade, cancelamento e conclusão
+- registro de produção
+- endpoints auxiliares para enums do domínio
 
-Main modules: `auth`, `category`, `employee`, `identity`, `product`, `production`, `service_order`, and `shared`.
+## Segurança
 
-## Local Environment
+A API usa JWT assinado com par de chaves RSA armazenado em:
 
-API base URL:
+- `src/main/resources/api-dev.pri`
+- `src/main/resources/api-dev.pub`
 
-```text
-http://localhost:8080
-```
+Regras atuais de acesso:
 
-H2 console:
+- `POST /auth/login` é público
+- todos os endpoints `GET` são públicos
+- demais métodos exigem token Bearer
+- `POST /auth/logout` invalida o token atual
 
-```text
-http://localhost:8080/h2-console
-```
+## Principais Endpoints
 
-Current configuration:
+Autenticação:
 
-- in-memory H2 database
-- initial data loaded from `data.sql`
-- schema generated from the entities using `ddl-auto=update`
+- `POST /auth/login`
+- `POST /auth/logout`
 
-## Running the Project
+Recursos principais:
+
+- `GET|POST|DELETE /categories`
+- `GET|POST|PATCH /employees`
+- `GET|POST|DELETE /roles`
+- `GET|POST|DELETE /users`
+- `GET|POST|PATCH|DELETE /products`
+- `GET|POST /productions`
+- `GET|POST|DELETE /farmarea`
+- `GET|POST|PATCH|DELETE /serviceorder`
+- `GET /enums/*`
+
+Alguns endpoints específicos úteis:
+
+- `PATCH /employees/{id}/phonenumber`
+- `POST /employees/{id}/terminate`
+- `PATCH /products/{id}/increase`
+- `PATCH /products/{id}/decrease`
+- `POST /serviceorder/add-item`
+- `DELETE /serviceorder/{orderId}/items/{itemId}`
+- `PATCH /serviceorder/{orderId}/order-item/{itemId}/increase`
+- `PATCH /serviceorder/{orderId}/order-item/{itemId}/decrease`
+- `PATCH /serviceorder/complete/{id}`
+- `PATCH /serviceorder/cancel/{id}`
+- `GET /serviceorder/list-details`
+
+## Perfis e Banco de Dados
+
+### Execução local padrão
+
+Por padrão a aplicação sobe com H2 em memória:
+
+- URL da API: `http://localhost:8080`
+- console H2: `http://localhost:8080/h2-console`
+- JDBC URL: `jdbc:h2:mem:testdb`
+- usuário: `sa`
+- senha: vazia
+
+Configuração atual do perfil padrão:
+
+- `spring.jpa.hibernate.ddl-auto=update`
+- `spring.sql.init.mode=always`
+- carga inicial via `src/main/resources/data.sql`
+
+Esse modo é o mais simples para desenvolvimento local e testes manuais.
+
+### Execução com Docker
+
+O repositório já vem containerizado com:
+
+- `Dockerfile` para build e empacotamento da aplicação
+- `docker-compose.yml` para subir API + MySQL 8
+
+Serviços definidos no Compose:
+
+- `api`: aplicação Spring Boot exposta em `localhost:8080`
+- `mysql`: banco MySQL exposto em `localhost:3307`
+
+Configuração do banco no Compose:
+
+- database: `efm`
+- usuário: `root`
+- senha: `root`
+
+Comando para subir o ambiente:
 
 ```bash
-mvn spring-boot:run
+docker compose up --build
 ```
 
-Or:
+Observação importante sobre o perfil Docker:
+
+- o compose ativa o perfil `docker`
+- a aplicação usa MySQL em `jdbc:mysql://mysql:3306/efm`
+- nesse perfil o `spring.sql.init.mode=never`
+
+Na prática, isso significa que o `data.sql` não é carregado automaticamente quando a aplicação sobe via Docker. Em um banco MySQL vazio, a estrutura é criada pelo Hibernate, mas os dados iniciais não são populados.
+
+## Seed de Dados
+
+No perfil local com H2, o arquivo `src/main/resources/data.sql` popula:
+
+- categorias
+- produtos
+- funcionários
+- áreas da fazenda
+- ordens de serviço e itens
+- registros de produção
+- papéis (`ADMIN` e `USER`)
+- usuários iniciais (`admin` e `worker`)
+
+Como o perfil Docker desabilita a inicialização SQL, esse seed fica disponível automaticamente apenas no modo padrão com H2.
+
+## Como Executar
+
+### Com Maven
 
 ```bash
-mvn clean package
+./mvnw spring-boot:run
+```
+
+Ou:
+
+```bash
+./mvnw clean package
 java -jar target/efm-0.0.1-SNAPSHOT.jar
 ```
 
-## Tests
-
-One of the goals of this project is to practice implementation together with automated validation.
-
-The API currently has 31 test classes in `src/test/java`, covering:
-
-- domain rules
-- JPA repositories
-- controllers
-- application services
-- application startup
-
-To run the tests:
+### Com Docker Compose
 
 ```bash
-mvn test
+docker compose up --build
 ```
 
-## Notes
+## Testes
 
-- this repository was created for study, practice, and knowledge consolidation
-- the initial dataset in `src/main/resources/data.sql` makes local exploration of the API easier
-- this is not a production-oriented project at this stage
-- the purpose is to support technical growth and code organization in a realistic API context
-- concepts such as Clean Architecture and DDD were used as references, with practical adaptations to fit the scope of the project
+O projeto possui 31 classes de teste em `src/test/java`, cobrindo:
+
+- regras de domínio
+- repositórios JPA
+- controllers
+- services e use cases
+- subida da aplicação
+
+Para executar:
+
+```bash
+./mvnw test
+```
+
+Os testes usam configuração própria em `src/test/resources/application-test.properties`.
+
+## Estrutura de Build
+
+O `Dockerfile` usa build em duas etapas:
+
+1. imagem `maven:3.9.9-eclipse-temurin-21` para gerar o `.jar`
+2. imagem `eclipse-temurin:21-jdk` para executar a aplicação
+
+## Observações
+
+- o projeto segue uma abordagem pragmática inspirada em Clean Architecture e DDD
+- o repositório contém material auxiliar em `docs/`
+- não há documentação OpenAPI/Swagger configurada no estado atual do projeto
+- como todos os `GET` são públicos, a API pode ser explorada parcialmente sem autenticação
+- operações de escrita dependem de token JWT válido
