@@ -1,5 +1,6 @@
 package afsj.efm.auth.security.config;
 
+import afsj.efm.auth.security.token.RevokedTokenValidator;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -17,10 +18,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,6 +43,12 @@ public class WebConfig {
    @Value("${jwt.rsa.pub}")
    private RSAPublicKey publicKey;
 
+   private final RevokedTokenValidator revokedTokenValidator;
+
+   public WebConfig(RevokedTokenValidator revokedTokenValidator) {
+      this.revokedTokenValidator = revokedTokenValidator;
+   }
+
    @Bean
    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       http
@@ -51,11 +62,11 @@ public class WebConfig {
               .authorizeHttpRequests((authorize) -> authorize
                       .requestMatchers("/h2-console/**", "/auth/login").permitAll()
                       .requestMatchers(HttpMethod.GET).permitAll()
-                      .anyRequest().permitAll()
-              );
-//              .oauth2ResourceServer(oauth2 ->
-//                      oauth2.jwt(jwt ->
-//                              jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                      .anyRequest().authenticated()
+              )
+              .oauth2ResourceServer(oauth2 ->
+                      oauth2.jwt(jwt ->
+                              jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
       return http.build();
    }
 
@@ -80,7 +91,13 @@ public class WebConfig {
 
    @Bean
    public JwtDecoder jwtDecoder() {
-      return NimbusJwtDecoder.withPublicKey(publicKey).build();
+      NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(publicKey).build();
+      OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>(
+              new JwtTimestampValidator(),
+              revokedTokenValidator
+      );
+      jwtDecoder.setJwtValidator(validator);
+      return jwtDecoder;
    }
 
    @Bean

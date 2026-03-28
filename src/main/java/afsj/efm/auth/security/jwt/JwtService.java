@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class JwtService {
@@ -30,6 +31,7 @@ public class JwtService {
               .toList();
 
       JwtClaimsSet claims = JwtClaimsSet.builder()
+              .id(UUID.randomUUID().toString())
               .issuer("efm-auth")
               .issuedAt(now)
               .expiresAt(now.plusSeconds(expiry))
