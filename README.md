@@ -123,11 +123,13 @@ Serviços definidos no Compose:
 - `api`: aplicação Spring Boot exposta em `localhost:8080`
 - `mysql`: banco MySQL exposto em `localhost:3307`
 
-Configuração do banco no Compose:
+Configuração padrão do `.env.example`:
 
 - database: `efm`
 - usuário: `root`
 - senha: `root`
+- usuário inicial da API no Docker: `admin`
+- senha inicial da API no Docker: `admin`
 
 Comando para subir o ambiente:
 
@@ -140,8 +142,9 @@ Observação importante sobre o perfil Docker:
 - o compose ativa o perfil `docker`
 - a aplicação usa MySQL em `jdbc:mysql://mysql:3306/efm`
 - nesse perfil o `spring.sql.init.mode=never`
+- ao subir com Docker, a aplicação garante um usuário administrador padrão caso ele ainda não exista no banco
 
-Na prática, isso significa que o `data.sql` não é carregado automaticamente quando a aplicação sobe via Docker. Em um banco MySQL vazio, a estrutura é criada pelo Hibernate, mas os dados iniciais não são populados.
+Na prática, isso significa que o `data.sql` não é carregado automaticamente quando a aplicação sobe via Docker. Em um banco MySQL vazio, a estrutura é criada pelo Hibernate e o acesso inicial `admin/admin` é provisionado automaticamente.
 
 ## Seed de Dados
 
@@ -176,7 +179,7 @@ curl -X POST http://localhost:8080/auth/login \
 Observação:
 
 - esse acesso depende do seed carregado pelo `data.sql`
-- no fluxo com Docker + MySQL, essas credenciais não ficam disponíveis automaticamente, a menos que você popule os dados manualmente
+- no fluxo com Docker + MySQL, a aplicação também garante esse acesso inicial por bootstrap no profile `docker`
 
 ## Como Executar
 
@@ -200,6 +203,14 @@ java -jar target/efm-0.0.1-SNAPSHOT.jar
 ```
 
 ### Com Docker Compose
+
+Primeiro, gere seu arquivo local de ambiente:
+
+```bash
+cp .env.example .env
+```
+
+Depois:
 
 ```bash
 docker compose up --build
