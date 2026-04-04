@@ -54,9 +54,14 @@ A API usa JWT assinado com par de chaves RSA armazenado em:
 Regras atuais de acesso:
 
 - `POST /auth/login` é público
-- todos os endpoints `GET` são públicos
+- todos os endpoints `GET` da API são públicos
 - demais métodos exigem token Bearer
 - `POST /auth/logout` invalida o token atual
+
+Observação:
+
+- essa regra vale para os endpoints HTTP da API
+- se existir uma interface cliente consumindo a API, ela ainda pode exigir login próprio para navegação
 
 ## Principais Endpoints
 
@@ -176,6 +181,12 @@ curl -X POST http://localhost:8080/auth/login \
   -d '{"username":"admin","password":"admin"}'
 ```
 
+Exemplo de endpoint público da API, sem autenticação:
+
+```bash
+curl http://localhost:8080/categories
+```
+
 Observação:
 
 - esse acesso depende do seed carregado pelo `data.sql`
@@ -246,5 +257,5 @@ O `Dockerfile` usa build em duas etapas:
 - o projeto segue uma abordagem pragmática inspirada em Clean Architecture e DDD
 - o repositório contém material auxiliar em `docs/`
 - não há documentação OpenAPI/Swagger configurada no estado atual do projeto
-- como todos os `GET` são públicos, a API pode ser explorada parcialmente sem autenticação
+- como todos os `GET` da API são públicos, a API pode ser explorada parcialmente sem autenticação
 - operações de escrita dependem de token JWT válido
