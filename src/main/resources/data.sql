@@ -295,10 +295,10 @@ values ('USER');
 
 -- USER ADMIN
 insert into users(username, password)
-values('admin', '$2y$10$9/aZt3ZnLfr398rJ9obD4O9uBUkH4ZpDI.87JmR4BddhZmxOjjLJq');
+values('admin', '$2y$06$GYPDcLGVfOTmzWh/eOQc0.rw3VvnXtkcXrklRInOS7HHhK98mGU.a');
 
 insert into users(username, password)
-values('worker', '$2y$10$9/aZt3ZnLfr398rJ9obD4O9uBUkH4ZpDI.87JmR4BddhZmxOjjLJq');
+values('user', '$2y$06$THc1Esa8y34r0kvJCHsy5eN6O3KtYODgWYdAJz/GVLz/maANIPcty');
 
 -- RELACIONAR ADMIN AO USER ADMIN
 insert into users_roles (user_id, role_id)

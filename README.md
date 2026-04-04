@@ -154,11 +154,37 @@ No perfil local com H2, o arquivo `src/main/resources/data.sql` popula:
 - ordens de serviço e itens
 - registros de produção
 - papéis (`ADMIN` e `USER`)
-- usuários iniciais (`admin` e `worker`)
+- usuários iniciais (`admin` e `user`)
 
 Como o perfil Docker desabilita a inicialização SQL, esse seed fica disponível automaticamente apenas no modo padrão com H2.
 
+## Acesso de Login para Testes
+
+Ao subir a aplicação no perfil padrão local, você pode autenticar com o usuário seed abaixo:
+
+- username: `admin`
+- password: `admin`
+
+Exemplo de requisição:
+
+```bash
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin"}'
+```
+
+Observação:
+
+- esse acesso depende do seed carregado pelo `data.sql`
+- no fluxo com Docker + MySQL, essas credenciais não ficam disponíveis automaticamente, a menos que você popule os dados manualmente
+
 ## Como Executar
+
+### Pré-requisitos
+
+- Java 21
+- Maven 3.9+ ou uso do `./mvnw`
+- Docker e Docker Compose, se quiser rodar a stack containerizada
 
 ### Com Maven
 
